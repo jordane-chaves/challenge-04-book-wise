@@ -1,0 +1,16 @@
+import z from 'zod'
+
+const envSchema = z.object({
+  NODE_ENV: z
+    .enum(['development', 'production', 'test'])
+    .default('development'),
+  HOST: z.ipv4().or(z.ipv6()).default('0.0.0.0'),
+  PORT: z.number().default(3333),
+  LOG_LEVEL: z
+    .enum(['fatal', 'error', 'warn', 'info', 'debug', 'trace'])
+    .default('info'),
+  DATABASE_URL: z.url(),
+})
+
+export type Env = z.infer<typeof envSchema>
+export const env = envSchema.parse(process.env)

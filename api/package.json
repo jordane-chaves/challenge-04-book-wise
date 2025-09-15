@@ -1,0 +1,41 @@
+{
+  "name": "api",
+  "version": "1.0.0",
+  "description": "",
+  "type": "module",
+  "main": "index.js",
+  "scripts": {
+    "start:dev": "node --env-file .env --experimental-strip-types --no-warnings --watch src/infra/server.ts",
+    "start": "node --experimental-strip-types --no-warnings src/infra/server.ts",
+    "lint": "biome check",
+    "format": "biome format --write",
+    "db:generate": "drizzle-kit generate",
+    "db:migrate": "drizzle-kit migrate",
+    "db:studio": "drizzle-kit studio"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "engines": {
+    "node": ">=22.7.0"
+  },
+  "dependencies": {
+    "@fastify/cors": "11.1.0",
+    "@fastify/swagger": "9.5.1",
+    "@scalar/fastify-api-reference": "1.35.6",
+    "drizzle-orm": "0.44.5",
+    "fastify": "5.6.0",
+    "fastify-type-provider-zod": "6.0.0",
+    "pg": "8.16.3",
+    "zod": "4.1.8"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "2.2.4",
+    "@tsconfig/node22": "22.0.2",
+    "@types/node": "24.5.0",
+    "@types/pg": "8.15.5",
+    "drizzle-kit": "0.31.4",
+    "pino-pretty": "13.1.1",
+    "typescript": "5.9.2"
+  }
+}
