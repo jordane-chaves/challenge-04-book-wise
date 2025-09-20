@@ -28,6 +28,8 @@
   --accent: var(--green-100);
   --accent-foreground: var(--gray-100);
   --destructive: #f75a68;
+  --button: var(--gray-600);
+  --button-hover: var(--gray-500);
   --card: var(--gray-700);
   --card-foreground: var(--gray-300);
   --sidebar: var(--gray-800);
@@ -43,9 +45,13 @@
   --color-primary-foreground: var(--primary-foreground);
   --color-secondary: var(--secondary);
   --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
   --color-accent: var(--accent);
   --color-accent-foreground: var(--accent-foreground);
   --color-destructive: var(--destructive);
+  --color-button: var(--button);
+  --color-button-hover: var(--button-hover);
   --color-card: var(--card);
   --color-card-foreground: var(--card-foreground);
   --color-sidebar: var(--sidebar);

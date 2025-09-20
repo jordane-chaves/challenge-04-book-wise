@@ -14,14 +14,14 @@ export const metadata: Metadata = {
   },
 }
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode
 }>) {
   return (
     <html className={nunitoSans.variable} lang="pt">
-      <body className="bg-background text-foreground antialiased">
+      <body className="flex min-h-screen w-full flex-col bg-background text-foreground antialiased">
         {children}
       </body>
     </html>
