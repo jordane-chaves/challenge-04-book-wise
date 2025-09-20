@@ -10,6 +10,13 @@ const envSchema = z.object({
     .enum(['fatal', 'error', 'warn', 'info', 'debug', 'trace'])
     .default('info'),
   DATABASE_URL: z.url(),
+  JWT_SECRET: z.string().min(1),
+  GOOGLE_OAUTH_CLIENT_ID: z.string().min(1),
+  GOOGLE_OAUTH_CLIENT_SECRET: z.string().min(1),
+  GOOGLE_OAUTH_CLIENT_REDIRECT_URI: z.url(),
+  GITHUB_OAUTH_CLIENT_ID: z.string().min(1),
+  GITHUB_OAUTH_CLIENT_SECRET: z.string().min(1),
+  GITHUB_OAUTH_CLIENT_REDIRECT_URI: z.url(),
 })
 
 export type Env = z.infer<typeof envSchema>
