@@ -26,23 +26,24 @@ app.register(fastifyJwt, {
   secret: env.JWT_SECRET,
 })
 
-app.register(fastifySwagger, {
-  openapi: {
-    info: {
-      title: 'BookWise API',
-      version: '1.0.0',
+if (env.NODE_ENV === 'development') {
+  app.register(fastifySwagger, {
+    openapi: {
+      info: {
+        title: 'BookWise API',
+        version: '1.0.0',
+      },
     },
-  },
+    transform: jsonSchemaTransform,
+  })
 
-  transform: jsonSchemaTransform,
-})
-
-app.register(scalarUI, {
-  routePrefix: '/docs',
-  configuration: {
-    layout: 'modern',
-  },
-})
+  app.register(scalarUI, {
+    routePrefix: '/docs',
+    configuration: {
+      layout: 'modern',
+    },
+  })
+}
 
 app.get('/health', () => {
   return 'ok'
