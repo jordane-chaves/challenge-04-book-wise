@@ -10,12 +10,14 @@ import {
   type ZodTypeProvider,
 } from 'fastify-type-provider-zod'
 import { env } from './env.ts'
+import { errorHandler } from './error-handler.ts'
 import { authenticateWithGithub } from './http/routes/auth/authenticate-with-github.ts'
 import { authenticateWithGoogle } from './http/routes/auth/authenticate-with-google.ts'
 import { logger } from './logger.ts'
 
 export const app = fastify({ logger }).withTypeProvider<ZodTypeProvider>()
 
+app.setErrorHandler(errorHandler)
 app.setValidatorCompiler(validatorCompiler)
 app.setSerializerCompiler(serializerCompiler)
 

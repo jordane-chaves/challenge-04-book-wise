@@ -4,6 +4,7 @@ import z from 'zod'
 import { db } from '../../../database/drizzle/client.ts'
 import { schema } from '../../../database/drizzle/schema/index.ts'
 import { env } from '../../../env.ts'
+import { UnauthorizedError } from '../../_errors/unauthorized-error.ts'
 
 export const authenticateWithGoogle: FastifyPluginCallbackZod = (app) => {
   app.post(
@@ -19,9 +20,8 @@ export const authenticateWithGoogle: FastifyPluginCallbackZod = (app) => {
             .describe('The Google temporary authorization code.'),
         }),
         response: {
-          201: z.object({
-            token: z.string(),
-          }),
+          201: z.object({ token: z.string() }).describe('Success'),
+          401: z.object({ message: z.string() }).describe('Unauthorized'),
         },
       },
     },
@@ -50,7 +50,7 @@ export const authenticateWithGoogle: FastifyPluginCallbackZod = (app) => {
       })
 
       if (!googleAccessTokenResponse.ok) {
-        throw new Error('Unauthorized.')
+        throw new UnauthorizedError()
       }
 
       const googleAccessTokenData = await googleAccessTokenResponse.json()
@@ -64,7 +64,7 @@ export const authenticateWithGoogle: FastifyPluginCallbackZod = (app) => {
         .safeParse(googleAccessTokenData)
 
       if (parsedGoogleAccessTokenData.success === false) {
-        throw new Error('Unauthorized.')
+        throw new UnauthorizedError()
       }
 
       const { access_token: googleAccessToken } =
@@ -80,7 +80,7 @@ export const authenticateWithGoogle: FastifyPluginCallbackZod = (app) => {
       )
 
       if (!googleUserResponse.ok) {
-        throw new Error('Unauthorized.')
+        throw new UnauthorizedError()
       }
 
       const googleUserData = await googleUserResponse.json()
@@ -95,7 +95,7 @@ export const authenticateWithGoogle: FastifyPluginCallbackZod = (app) => {
         .safeParse(googleUserData)
 
       if (parsedGoogleUserData.success === false) {
-        throw new Error('Unauthorized.')
+        throw new UnauthorizedError()
       }
 
       const { sub: googleId, name, email, picture } = parsedGoogleUserData.data
