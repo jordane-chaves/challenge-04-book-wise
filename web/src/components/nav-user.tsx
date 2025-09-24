@@ -1,22 +1,40 @@
 import { SignOutIcon } from "@phosphor-icons/react/dist/ssr"
-import Link from "next/link"
 import { Avatar, AvatarFallback, AvatarImage } from "./avatar"
+import { Button } from "./button"
 
-export function NavUser() {
+function getInitials(name: string) {
+  const initials = name
+    .split(" ")
+    .map((word) => word.charAt(0).toUpperCase())
+    .slice(0, 2)
+    .join("")
+
+  return initials
+}
+
+interface User {
+  name: string
+  avatarUrl: string | null
+}
+
+interface NavUserProps {
+  user: User
+}
+
+export function NavUser({ user }: NavUserProps) {
   return (
     <div className="flex max-w-full items-center gap-3">
       <Avatar size="sm">
-        <AvatarImage src="https://github.com/jordane-chaves.png" alt="" />
-        <AvatarFallback>JC</AvatarFallback>
+        {user.avatarUrl && <AvatarImage src={user.avatarUrl} alt="" />}
+        <AvatarFallback>{getInitials(user.name)}</AvatarFallback>
       </Avatar>
-      <span className="truncate text-sidebar-foreground">Jordane Chaves</span>
-      <Link
-        className="not-disabled:cursor-pointer rounded-xs outline-none not-disabled:hover:brightness-90 focus-visible:ring-2 focus-visible:ring-accent"
-        href="#"
-      >
-        <SignOutIcon className="size-5 text-destructive" />
-        <span className="sr-only">Sair</span>
-      </Link>
+      <span className="truncate text-sidebar-foreground">{user.name}</span>
+      <a className="size-fit rounded-xs outline-none" href="/api/auth/sign-out">
+        <Button variant="ghost" size="icon">
+          <SignOutIcon className="text-destructive" />
+          <span className="sr-only">Sair</span>
+        </Button>
+      </a>
     </div>
   )
 }

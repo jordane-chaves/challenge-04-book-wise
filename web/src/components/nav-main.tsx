@@ -3,10 +3,13 @@ import {
   ChartLineUpIcon,
   UserIcon,
 } from "@phosphor-icons/react/dist/ssr"
+import { auth } from "@/auth/auth"
 import { NavLink } from "./nav-link"
 
-export function NavMain() {
-  const isAuthenticated = true
+export async function NavMain() {
+  const { user } = await auth()
+
+  const isAuthenticated = !!user
 
   return (
     <nav className="flex flex-col gap-4">

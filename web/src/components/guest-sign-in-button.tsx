@@ -3,7 +3,7 @@ import { Button } from "./button"
 
 export function GuestSignInButton() {
   return (
-    <Button>
+    <Button size="lg">
       <RocketLaunchIcon className="size-8 text-primary" />
       Acessar como Visitante
     </Button>

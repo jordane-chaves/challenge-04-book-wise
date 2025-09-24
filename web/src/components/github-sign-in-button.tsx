@@ -6,7 +6,7 @@ import { Button } from "./button"
 
 export function GithubSignInButton() {
   return (
-    <Button onClick={signInWithGithub}>
+    <Button onClick={signInWithGithub} size="lg">
       <GithubIcon className="size-8 text-white" />
       Entrar com Github
     </Button>

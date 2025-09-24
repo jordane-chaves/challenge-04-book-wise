@@ -3,12 +3,15 @@ import Image from "next/image"
 import Link from "next/link"
 import logoImg from "@/assets/logo.svg"
 import sidebarBackgroundImg from "@/assets/sidebar-background.png"
+import { auth } from "@/auth/auth"
 import { Button } from "./button"
 import { NavMain } from "./nav-main"
 import { NavUser } from "./nav-user"
 
-export function AppSidebar() {
-  const isAuthenticated = true
+export async function AppSidebar() {
+  const { user } = await auth()
+
+  const isAuthenticated = !!user
 
   return (
     <div className="h-dvh shrink-0 py-5 pl-5">
@@ -39,10 +42,13 @@ export function AppSidebar() {
 
           <footer className="m-6 mt-auto flex justify-center">
             {isAuthenticated ? (
-              <NavUser />
+              <NavUser user={{ name: user.name, avatarUrl: user.avatar_url }} />
             ) : (
-              <Link href="/sign-in">
-                <Button type="button" variant="link">
+              <Link
+                href="/sign-in"
+                className="rounded-xs outline-none focus-visible:ring-2 focus-visible:ring-accent"
+              >
+                <Button type="button" variant="ghost">
                   Fazer login <SignInIcon className="text-accent" />
                 </Button>
               </Link>

@@ -6,7 +6,7 @@ import { Button } from "./button"
 
 export function GoogleSignInButton() {
   return (
-    <Button onClick={signInWithGoogle}>
+    <Button onClick={signInWithGoogle} size="lg">
       <GoogleIcon className="size-8" />
       Entrar com Google
     </Button>
