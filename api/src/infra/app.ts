@@ -13,6 +13,7 @@ import { env } from './env.ts'
 import { errorHandler } from './error-handler.ts'
 import { authenticateWithGithub } from './http/routes/auth/authenticate-with-github.ts'
 import { authenticateWithGoogle } from './http/routes/auth/authenticate-with-google.ts'
+import { getProfile } from './http/routes/auth/profile.ts'
 import { logger } from './logger.ts'
 
 export const app = fastify({ logger }).withTypeProvider<ZodTypeProvider>()
@@ -33,6 +34,15 @@ if (env.NODE_ENV === 'development') {
         title: 'BookWise API',
         version: '1.0.0',
       },
+      components: {
+        securitySchemes: {
+          bearerAuth: {
+            type: 'http',
+            scheme: 'bearer',
+            bearerFormat: 'JWT',
+          },
+        },
+      },
     },
     transform: jsonSchemaTransform,
   })
@@ -51,3 +61,4 @@ app.get('/health', () => {
 
 app.register(authenticateWithGithub)
 app.register(authenticateWithGoogle)
+app.register(getProfile)
