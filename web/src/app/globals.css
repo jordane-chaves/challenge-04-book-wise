@@ -29,6 +29,7 @@
   --accent-foreground: var(--gray-100);
   --destructive: #f75a68;
   --button: var(--gray-600);
+  --button-foreground: var(--gray-200);
   --button-hover: var(--gray-500);
   --card: var(--gray-700);
   --card-foreground: var(--gray-300);
@@ -51,6 +52,7 @@
   --color-accent-foreground: var(--accent-foreground);
   --color-destructive: var(--destructive);
   --color-button: var(--button);
+  --color-button-foreground: var(--button-foreground);
   --color-button-hover: var(--button-hover);
   --color-card: var(--card);
   --color-card-foreground: var(--card-foreground);
