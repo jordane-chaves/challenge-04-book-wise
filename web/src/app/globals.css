@@ -31,10 +31,16 @@
   --button: var(--gray-600);
   --button-foreground: var(--gray-200);
   --button-hover: var(--gray-500);
+  --input: var(--gray-500);
+  --input-hover: var(--green-200);
   --card: var(--gray-700);
   --card-foreground: var(--gray-300);
   --sidebar: var(--gray-800);
   --sidebar-foreground: var(--gray-200);
+  --tag: var(--green-300);
+  --tag-foreground: var(--green-100);
+  --scrollbar: var(--gray-700);
+  --scrollbar-thumb: var(--gray-600);
   --gradient-1: #7fd1cc;
   --gradient-2: #9694f5;
 }
@@ -54,12 +60,34 @@
   --color-button: var(--button);
   --color-button-foreground: var(--button-foreground);
   --color-button-hover: var(--button-hover);
+  --color-input: var(--input);
+  --color-input-hover: var(--input-hover);
   --color-card: var(--card);
   --color-card-foreground: var(--card-foreground);
   --color-sidebar: var(--sidebar);
   --color-sidebar-foreground: var(--sidebar-foreground);
   --color-gradient-1: var(--gradient-1);
   --color-gradient-2: var(--gradient-2);
+  --color-purple-200: var(--purple-200);
+  --color-tag: var(--tag);
+  --color-tag-foreground: var(--tag-foreground);
+  --color-scrollbar: var(--scrollbar);
+  --color-scrollbar-thumb: var(--scrollbar-thumb);
 
   --font-sans: var(--font-nunito-sans);
+}
+
+@utility custom-scrollbar {
+  ::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background-color: var(--color-scrollbar);
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background-color: var(--color-scrollbar-thumb);
+    border-radius: 9999px;
+  }
 }

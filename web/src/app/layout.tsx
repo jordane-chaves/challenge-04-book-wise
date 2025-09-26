@@ -21,7 +21,7 @@ export default async function RootLayout({
 }>) {
   return (
     <html className={nunitoSans.variable} lang="pt">
-      <body className="flex min-h-screen w-full flex-col bg-background text-foreground antialiased">
+      <body className="custom-scrollbar flex min-h-screen w-full flex-col bg-background text-foreground antialiased">
         {children}
       </body>
     </html>
