@@ -16,6 +16,7 @@ import { errorHandler } from './error-handler.ts'
 import { authenticateWithGithub } from './http/routes/auth/authenticate-with-github.ts'
 import { authenticateWithGoogle } from './http/routes/auth/authenticate-with-google.ts'
 import { getProfile } from './http/routes/auth/profile.ts'
+import { getReadBooks } from './http/routes/books/get-read-books.ts'
 import { searchBooks } from './http/routes/books/search.ts'
 import { fetchCategories } from './http/routes/categories/fetch.ts'
 import { logger } from './logger.ts'
@@ -72,4 +73,5 @@ app.register(authenticateWithGithub)
 app.register(authenticateWithGoogle)
 app.register(getProfile)
 app.register(fetchCategories)
+app.register(getReadBooks)
 app.register(searchBooks)
