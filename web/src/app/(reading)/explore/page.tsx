@@ -4,7 +4,9 @@ import { auth } from "@/auth/auth"
 import { Card } from "@/components/card"
 import { Rating } from "@/components/rating"
 import { fetchCategories } from "@/http/fetch-categories"
+import { getReadBooks } from "@/http/get-read-books"
 import { searchBooks } from "@/http/search-books"
+import { getTokenFromCookie } from "@/lib/sessions"
 import { Categories } from "./categories"
 import { SearchForm } from "./search-form"
 
@@ -68,9 +70,16 @@ export default async function Explore({
 }) {
   const { categoryId, q: query } = await searchParams
   const { user } = await auth()
+  const accessToken = await getTokenFromCookie()
 
   const isAuthenticated = !!user
-  const readBooksIds = [books[1].id, books[3].id]
+
+  let readBooksIds: string[] = []
+
+  if (accessToken) {
+    const readBooksResponse = await getReadBooks({ accessToken })
+    readBooksIds = readBooksResponse.booksIds
+  }
 
   const categoriesResponse = await fetchCategories()
   const booksResponse = await searchBooks({ categoryId, query })
