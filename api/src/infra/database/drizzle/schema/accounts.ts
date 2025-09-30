@@ -10,7 +10,7 @@ export const accounts = pgTable(
     providerId: text().notNull(),
     userId: uuid()
       .notNull()
-      .references(() => users.id),
+      .references(() => users.id, { onDelete: 'cascade' }),
     provider: providerEnum().notNull(),
   },
   (table) => [unique().on(table.provider, table.userId)],

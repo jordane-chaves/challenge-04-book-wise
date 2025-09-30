@@ -1,0 +1,16 @@
+import { numeric, pgTable, text, timestamp, uuid } from 'drizzle-orm/pg-core'
+import { books } from './books.ts'
+import { users } from './users.ts'
+
+export const ratings = pgTable('ratings', {
+  id: uuid().primaryKey().defaultRandom(),
+  bookId: uuid()
+    .notNull()
+    .references(() => books.id, { onDelete: 'cascade' }),
+  userId: uuid()
+    .notNull()
+    .references(() => users.id, { onDelete: 'cascade' }),
+  rating: numeric().notNull(),
+  description: text().notNull(),
+  createdAt: timestamp().defaultNow().notNull(),
+})

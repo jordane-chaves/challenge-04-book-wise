@@ -9,6 +9,7 @@ const envSchema = z.object({
   LOG_LEVEL: z
     .enum(['fatal', 'error', 'warn', 'info', 'debug', 'trace'])
     .default('info'),
+  API_BASE_URL: z.url(),
   DATABASE_URL: z.url(),
   JWT_SECRET: z.string().min(1),
   GOOGLE_OAUTH_CLIENT_ID: z.string().min(1),

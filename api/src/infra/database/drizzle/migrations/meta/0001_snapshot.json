@@ -41,12 +41,8 @@
           "name": "accounts_user_id_users_id_fk",
           "tableFrom": "accounts",
           "tableTo": "users",
-          "columnsFrom": [
-            "user_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["user_id"],
+          "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         }
@@ -56,10 +52,7 @@
         "accounts_provider_userId_unique": {
           "name": "accounts_provider_userId_unique",
           "nullsNotDistinct": false,
-          "columns": [
-            "provider",
-            "user_id"
-          ]
+          "columns": ["provider", "user_id"]
         }
       },
       "policies": {},
@@ -116,9 +109,7 @@
         "users_email_unique": {
           "name": "users_email_unique",
           "nullsNotDistinct": false,
-          "columns": [
-            "email"
-          ]
+          "columns": ["email"]
         }
       },
       "policies": {},
@@ -130,10 +121,7 @@
     "public.provider": {
       "name": "provider",
       "schema": "public",
-      "values": [
-        "GITHUB",
-        "GOOGLE"
-      ]
+      "values": ["GITHUB", "GOOGLE"]
     }
   },
   "schemas": {},

@@ -15,6 +15,20 @@
       "when": 1758189583869,
       "tag": "0001_melodic_captain_marvel",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1758925637203,
+      "tag": "0002_quick_tomorrow_man",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1758926404828,
+      "tag": "0003_chunky_carnage",
+      "breakpoints": true
     }
   ]
 }
