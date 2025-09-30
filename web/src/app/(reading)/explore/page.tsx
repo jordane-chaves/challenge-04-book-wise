@@ -1,13 +1,12 @@
-import {
-  BinocularsIcon,
-  MagnifyingGlassIcon,
-} from "@phosphor-icons/react/dist/ssr"
+import { BinocularsIcon } from "@phosphor-icons/react/dist/ssr"
 import Image from "next/image"
 import { auth } from "@/auth/auth"
-import { Badge } from "@/components/badge"
 import { Card } from "@/components/card"
-import { Input } from "@/components/input"
 import { Rating } from "@/components/rating"
+import { fetchCategories } from "@/http/fetch-categories"
+import { searchBooks } from "@/http/search-books"
+import { Categories } from "./categories"
+import { SearchForm } from "./search-form"
 
 interface Book {
   id: string
@@ -62,11 +61,19 @@ export const books: Book[] = [
   },
 ]
 
-export default async function Explore() {
+export default async function Explore({
+  searchParams,
+}: {
+  searchParams: Promise<{ categoryId?: string; q?: string }>
+}) {
+  const { categoryId, q: query } = await searchParams
   const { user } = await auth()
 
   const isAuthenticated = !!user
   const readBooksIds = [books[1].id, books[3].id]
+
+  const categoriesResponse = await fetchCategories()
+  const booksResponse = await searchBooks({ categoryId, query })
 
   return (
     <div>
@@ -76,29 +83,17 @@ export default async function Explore() {
           <h1 className="font-bold text-2xl leading-snug">Explorar</h1>
         </div>
 
-        <div className="group relative w-full max-w-sm">
-          <Input className="w-full" placeholder="Buscar livro ou autor" />
-          <MagnifyingGlassIcon className="-translate-y-1/2 absolute top-1/2 right-5 size-5 select-none text-input group-has-[input:focus]:text-input-hover" />
-        </div>
+        <SearchForm />
       </header>
 
-      <div className="mt-10 flex flex-wrap items-center gap-3">
-        <Badge selected>Tudo</Badge>
-        <Badge>Computação</Badge>
-        <Badge>Educação</Badge>
-        <Badge>Fantasia</Badge>
-        <Badge>Ficção científica</Badge>
-        <Badge>Horror</Badge>
-        <Badge>HQs</Badge>
-        <Badge>Suspense</Badge>
-      </div>
+      <Categories categories={categoriesResponse.categories} />
 
       <div className="mt-12 grid grid-cols-3 gap-5">
-        {books.map((book) => {
+        {booksResponse.books.map((book) => {
           const isReadBook = readBooksIds.includes(book.id)
 
           return (
-            <Card key={book.id} className="px-5 py-4">
+            <Card key={book.id} className="cursor-pointer px-5 py-4">
               <div className="flex w-full gap-5">
                 <div className="h-[152px] w-[108px] shrink-0 overflow-hidden rounded-sm">
                   <Image

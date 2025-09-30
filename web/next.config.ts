@@ -6,6 +6,7 @@ const nextConfig: NextConfig = {
   },
   images: {
     qualities: [25, 50, 75, 100],
+    remotePatterns: [new URL("http://localhost:3333/**")],
   },
 }
 
