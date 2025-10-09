@@ -1,67 +1,16 @@
 import { BinocularsIcon } from "@phosphor-icons/react/dist/ssr"
 import Image from "next/image"
 import { auth } from "@/auth/auth"
-import { Card } from "@/components/card"
 import { Rating } from "@/components/rating"
+import { Card } from "@/components/ui/card"
+import { Sheet, SheetTrigger } from "@/components/ui/sheet"
 import { fetchCategories } from "@/http/fetch-categories"
 import { getReadBooks } from "@/http/get-read-books"
 import { searchBooks } from "@/http/search-books"
 import { getTokenFromCookie } from "@/lib/sessions"
+import { BookDetails } from "./book-details"
 import { Categories } from "./categories"
 import { SearchForm } from "./search-form"
-
-interface Book {
-  id: string
-  coverUrl: string
-  name: string
-  author: string
-  rating: number
-}
-
-export const books: Book[] = [
-  {
-    id: "1",
-    name: "A revolução dos bichos",
-    author: "George Orwell",
-    coverUrl: "/images/a-revolucao-dos-bichos.png",
-    rating: 4,
-  },
-  {
-    id: "2",
-    name: "14 Hábitos de Desenvolvedores Altamente Produtivos",
-    author: "Zeno Rocha",
-    coverUrl: "/images/14-habitos-de-desenvolvedores-altamente-produtivos.png",
-    rating: 4,
-  },
-  {
-    id: "3",
-    name: "O Fim da Eternidade",
-    author: "Isaac Asimov",
-    coverUrl: "/images/o-fim-da-eternidade.png",
-    rating: 4,
-  },
-  {
-    id: "4",
-    name: "Entendendo Algoritmos",
-    author: "Aditya Bhargava",
-    coverUrl: "/images/entendendo-algoritmos.png",
-    rating: 4,
-  },
-  {
-    id: "5",
-    name: "Código limpo",
-    author: "Robert C. Martin",
-    coverUrl: "/images/codigo-limpo.png",
-    rating: 4,
-  },
-  {
-    id: "6",
-    name: "O poder do hábito",
-    author: "Charles Duhigg",
-    coverUrl: "/images/o-poder-do-habito.png",
-    rating: 4,
-  },
-]
 
 export default async function Explore({
   searchParams,
@@ -102,35 +51,41 @@ export default async function Explore({
           const isReadBook = readBooksIds.includes(book.id)
 
           return (
-            <Card key={book.id} className="cursor-pointer px-5 py-4">
-              <div className="flex w-full gap-5">
-                <div className="h-[152px] w-[108px] shrink-0 overflow-hidden rounded-sm">
-                  <Image
-                    className="size-full"
-                    src={book.coverUrl}
-                    alt=""
-                    height={152}
-                    width={108}
-                  />
-                </div>
-                <div className="flex flex-col overflow-hidden">
-                  <h1 className="line-clamp-2 font-bold text-base leading-snug">
-                    {book.name}
-                  </h1>
-                  <p className="text-muted-foreground text-sm leading-relaxed">
-                    {book.author}
-                  </p>
+            <Sheet key={book.id}>
+              <SheetTrigger asChild>
+                <Card className="cursor-pointer px-5 py-4 ring-card-hover hover:ring-2">
+                  <div className="flex w-full gap-5">
+                    <div className="h-[152px] w-[108px] shrink-0 overflow-hidden rounded-sm">
+                      <Image
+                        className="size-full"
+                        src={book.coverUrl}
+                        alt=""
+                        height={152}
+                        width={108}
+                      />
+                    </div>
+                    <div className="flex flex-col overflow-hidden">
+                      <h1 className="line-clamp-2 font-bold text-base leading-snug">
+                        {book.name}
+                      </h1>
+                      <p className="text-muted-foreground text-sm leading-relaxed">
+                        {book.author}
+                      </p>
 
-                  <Rating className="mt-auto" rating={book.rating} />
-                </div>
-              </div>
+                      <Rating className="mt-auto" rating={book.rating} />
+                    </div>
+                  </div>
 
-              {isAuthenticated && isReadBook && (
-                <span className="absolute top-0 right-0 rounded-bl-sm bg-tag px-3 py-1 font-bold text-tag-foreground text-xs uppercase leading-tight">
-                  Lido
-                </span>
-              )}
-            </Card>
+                  {isAuthenticated && isReadBook && (
+                    <span className="absolute top-0 right-0 rounded-bl-sm bg-tag px-3 py-1 font-bold text-tag-foreground text-xs uppercase leading-tight">
+                      Lido
+                    </span>
+                  )}
+                </Card>
+              </SheetTrigger>
+
+              <BookDetails />
+            </Sheet>
           )
         })}
       </div>

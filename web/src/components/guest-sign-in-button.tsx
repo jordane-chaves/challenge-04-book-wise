@@ -1,5 +1,5 @@
 import { RocketLaunchIcon } from "@phosphor-icons/react/dist/ssr"
-import { Button } from "./button"
+import { Button } from "./ui/button"
 
 export function GuestSignInButton() {
   return (

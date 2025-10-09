@@ -1,7 +1,7 @@
 "use client"
 
 import { useRouter, useSearchParams } from "next/navigation"
-import { Badge } from "@/components/badge"
+import { Badge } from "@/components/ui/badge"
 
 interface Category {
   id: string

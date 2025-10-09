@@ -4,9 +4,9 @@ import Link from "next/link"
 import logoImg from "@/assets/logo.svg"
 import sidebarBackgroundImg from "@/assets/sidebar-background.png"
 import { auth } from "@/auth/auth"
-import { Button } from "./button"
 import { NavMain } from "./nav-main"
 import { NavUser } from "./nav-user"
+import { Button } from "./ui/button"
 
 export async function AppSidebar() {
   const { user } = await auth()

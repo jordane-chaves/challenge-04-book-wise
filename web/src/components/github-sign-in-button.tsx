@@ -2,7 +2,7 @@
 
 import { signInWithGithub } from "@/app/(auth)/actions"
 import { GithubIcon } from "@/assets/github-icon"
-import { Button } from "./button"
+import { Button } from "./ui/button"
 
 export function GithubSignInButton() {
   return (

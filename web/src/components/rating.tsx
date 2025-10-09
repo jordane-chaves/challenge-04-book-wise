@@ -1,6 +1,7 @@
 "use client"
 
 import { StarIcon } from "@phosphor-icons/react/dist/ssr"
+import { cva, type VariantProps } from "class-variance-authority"
 import clsx from "clsx"
 import { type ComponentProps, useId } from "react"
 import { twMerge } from "tailwind-merge"
@@ -14,27 +15,40 @@ const options = Array.from(
   return option / 2
 })
 
-interface RatingProps extends ComponentProps<"div"> {
-  rating?: number
-  onRatingChange?: (rating: number) => void
-}
+const ratingVariants = cva(
+  "inline-flex w-fit shrink-0 rounded-sm p-0.5 text-primary ring-inset has-focus-visible:ring-2",
+  {
+    variants: {
+      size: {
+        sm: "[&_label]:h-4 [&_label]:w-2 [&_svg]:size-4",
+        md: "[&_label]:h-5 [&_label]:w-2.5 [&_svg]:size-5",
+        lg: "[&_label]:h-7 [&_label]:w-3.5 [&_svg]:size-7",
+      },
+    },
+
+    defaultVariants: {
+      size: "sm",
+    },
+  },
+)
+
+type RatingProps = ComponentProps<"div"> &
+  VariantProps<typeof ratingVariants> & {
+    rating?: number
+    onRatingChange?: (rating: number) => void
+  }
 
 export function Rating({
   className,
   rating,
+  size,
   onRatingChange = () => null,
   ...props
 }: RatingProps) {
   const name = `rating-${useId()}`
 
   return (
-    <div
-      className={twMerge(
-        "inline-flex w-fit shrink-0 rounded-sm p-0.5 text-primary ring-inset has-focus-visible:ring-2",
-        className,
-      )}
-      {...props}
-    >
+    <div className={twMerge(ratingVariants({ className, size }))} {...props}>
       {options.map((option, index) => {
         const isEvenOption = index % 2 === 0
 
@@ -43,7 +57,7 @@ export function Rating({
             key={option}
             className={twMerge(
               clsx(
-                "group relative h-4 w-2 cursor-pointer overflow-hidden [&_svg]:right-0",
+                "group relative cursor-pointer overflow-hidden [&_svg]:right-0",
                 {
                   "[&_svg]:left-0": isEvenOption,
                 },
@@ -58,9 +72,9 @@ export function Rating({
               onChange={() => onRatingChange(option)}
             />
 
-            <StarIcon className="absolute block size-4 select-none group-has-[input:checked]:hidden group-has-[~_label_input:checked]:hidden" />
+            <StarIcon className="absolute block select-none group-has-[input:checked]:hidden group-has-[~_label_input:checked]:hidden" />
             <StarIcon
-              className="absolute hidden size-4 select-none group-has-[input:checked]:block group-has-[~_label_input:checked]:block"
+              className="absolute hidden select-none group-has-[input:checked]:block group-has-[~_label_input:checked]:block"
               weight="fill"
             />
 

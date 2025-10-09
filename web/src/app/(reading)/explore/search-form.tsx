@@ -3,7 +3,7 @@
 import { MagnifyingGlassIcon } from "@phosphor-icons/react/dist/ssr"
 import { useRouter, useSearchParams } from "next/navigation"
 import type { FormEvent } from "react"
-import { Input } from "@/components/input"
+import { Input } from "@/components/ui/input"
 
 export function SearchForm() {
   const router = useRouter()

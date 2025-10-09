@@ -28,6 +28,7 @@
   --accent: var(--green-100);
   --accent-foreground: var(--gray-100);
   --destructive: #f75a68;
+  --border: var(--gray-600);
   --button: var(--gray-600);
   --button-foreground: var(--gray-200);
   --button-hover: var(--gray-500);
@@ -35,6 +36,7 @@
   --input-hover: var(--green-200);
   --card: var(--gray-700);
   --card-foreground: var(--gray-300);
+  --card-hover: var(--gray-600);
   --sidebar: var(--gray-800);
   --sidebar-foreground: var(--gray-200);
   --tag: var(--green-300);
@@ -57,6 +59,7 @@
   --color-accent: var(--accent);
   --color-accent-foreground: var(--accent-foreground);
   --color-destructive: var(--destructive);
+  --color-border: var(--border);
   --color-button: var(--button);
   --color-button-foreground: var(--button-foreground);
   --color-button-hover: var(--button-hover);
@@ -64,6 +67,7 @@
   --color-input-hover: var(--input-hover);
   --color-card: var(--card);
   --color-card-foreground: var(--card-foreground);
+  --color-card-hover: var(--card-hover);
   --color-sidebar: var(--sidebar);
   --color-sidebar-foreground: var(--sidebar-foreground);
   --color-gradient-1: var(--gradient-1);

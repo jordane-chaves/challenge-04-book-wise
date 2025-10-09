@@ -9,11 +9,12 @@ const buttonVariants = cva(
       variant: {
         default: "bg-button text-lg hover:bg-button-hover",
         ghost: "bg-transparent hover:bg-button-foreground/5",
+        link: "text-primary hover:bg-primary/6",
       },
       size: {
         default: "gap-3 p-1 px-2",
         lg: "gap-5 px-6 py-5",
-        icon: "p-1",
+        icon: "rounded-sm p-2",
       },
     },
     defaultVariants: {

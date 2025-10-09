@@ -1,6 +1,6 @@
 import { SignOutIcon } from "@phosphor-icons/react/dist/ssr"
-import { Avatar, AvatarFallback, AvatarImage } from "./avatar"
-import { Button } from "./button"
+import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar"
+import { Button } from "./ui/button"
 
 function getInitials(name: string) {
   const initials = name
@@ -30,7 +30,7 @@ export function NavUser({ user }: NavUserProps) {
       </Avatar>
       <span className="truncate text-sidebar-foreground">{user.name}</span>
       <a className="size-fit rounded-xs outline-none" href="/api/auth/sign-out">
-        <Button variant="ghost" size="icon">
+        <Button className="p-1" variant="ghost" size="icon">
           <SignOutIcon className="text-destructive" />
           <span className="sr-only">Sair</span>
         </Button>
