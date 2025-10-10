@@ -16,9 +16,11 @@ import { errorHandler } from './error-handler.ts'
 import { authenticateWithGithub } from './http/routes/auth/authenticate-with-github.ts'
 import { authenticateWithGoogle } from './http/routes/auth/authenticate-with-google.ts'
 import { getProfile } from './http/routes/auth/profile.ts'
+import { getBookDetails } from './http/routes/books/details.ts'
 import { getReadBooks } from './http/routes/books/get-read-books.ts'
 import { searchBooks } from './http/routes/books/search.ts'
 import { fetchCategories } from './http/routes/categories/fetch.ts'
+import { fetchBookRatings } from './http/routes/ratings/fetch-book-ratings.ts'
 import { logger } from './logger.ts'
 
 export const app = fastify({ logger }).withTypeProvider<ZodTypeProvider>()
@@ -73,5 +75,7 @@ app.register(authenticateWithGithub)
 app.register(authenticateWithGoogle)
 app.register(getProfile)
 app.register(fetchCategories)
+app.register(fetchBookRatings)
+app.register(getBookDetails)
 app.register(getReadBooks)
 app.register(searchBooks)

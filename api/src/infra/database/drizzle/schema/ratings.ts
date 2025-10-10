@@ -10,7 +10,7 @@ export const ratings = pgTable('ratings', {
   userId: uuid()
     .notNull()
     .references(() => users.id, { onDelete: 'cascade' }),
-  rating: numeric().notNull(),
+  rating: numeric({ mode: 'number' }).notNull(),
   description: text().notNull(),
   createdAt: timestamp().defaultNow().notNull(),
 })
