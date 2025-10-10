@@ -27,7 +27,6 @@
     "@fastify/swagger": "9.5.1",
     "@scalar/fastify-api-reference": "1.35.6",
     "drizzle-orm": "0.44.5",
-    "drizzle-seed": "0.3.1",
     "fastify": "5.6.0",
     "fastify-type-provider-zod": "6.0.0",
     "pg": "8.16.3",
@@ -35,6 +34,7 @@
   },
   "devDependencies": {
     "@biomejs/biome": "2.2.4",
+    "@faker-js/faker": "10.0.0",
     "@tsconfig/node22": "22.0.2",
     "@types/node": "24.5.0",
     "@types/pg": "8.15.5",
