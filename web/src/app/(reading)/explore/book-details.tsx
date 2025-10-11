@@ -5,9 +5,7 @@ import {
 import Image from "next/image"
 import { auth } from "@/auth/auth"
 import { Rating } from "@/components/rating"
-import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
-import { Dialog, DialogTrigger } from "@/components/ui/dialog"
 import {
   SheetContent,
   SheetDescription,
@@ -16,10 +14,11 @@ import {
 import { RatingFormProvider } from "@/contexts/rating-form"
 import { fetchBookRatings } from "@/http/fetch-book-ratings"
 import { getBookDetails } from "@/http/get-book-details"
-import { RateButton } from "./rate-button"
+import { getReadBooks } from "@/http/get-read-books"
+import { getTokenFromCookie } from "@/lib/sessions"
+import { RatingButton } from "./rating-button"
 import { RatingCard } from "./rating-card"
 import { RatingForm } from "./rating-form"
-import { SignInDialog } from "./sign-in-dialog"
 
 interface BookDetailsProps {
   bookId: string
@@ -27,10 +26,20 @@ interface BookDetailsProps {
 
 export async function BookDetails({ bookId }: BookDetailsProps) {
   const { user } = await auth()
+  const accessToken = await getTokenFromCookie()
+
   const { book } = await getBookDetails({ bookId })
   const { ratings } = await fetchBookRatings({ bookId })
 
+  let readBooksIds: string[] = []
+
+  if (accessToken) {
+    const readBooksResponse = await getReadBooks({ accessToken })
+    readBooksIds = readBooksResponse.booksIds
+  }
+
   const isAuthenticated = !!user
+  const isReadBook = readBooksIds.includes(bookId)
 
   return (
     <SheetContent>
@@ -86,19 +95,7 @@ export async function BookDetails({ bookId }: BookDetailsProps) {
         <div className="space-y-4">
           <div className="flex items-center justify-between gap-4">
             <span>Avaliações</span>
-
-            {isAuthenticated ? (
-              <RateButton />
-            ) : (
-              <Dialog>
-                <DialogTrigger asChild>
-                  <Button type="button" variant="link">
-                    Avaliar
-                  </Button>
-                </DialogTrigger>
-                <SignInDialog />
-              </Dialog>
-            )}
+            {!isReadBook && <RatingButton isAuthenticated={isAuthenticated} />}
           </div>
 
           <div className="space-y-3">
