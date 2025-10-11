@@ -42,7 +42,7 @@ export async function AppSidebar() {
 
           <footer className="m-6 mt-auto flex justify-center">
             {isAuthenticated ? (
-              <NavUser user={{ name: user.name, avatarUrl: user.avatar_url }} />
+              <NavUser user={user} />
             ) : (
               <Link
                 href="/sign-in"

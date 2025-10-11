@@ -14,7 +14,7 @@ import { rateBookAction } from "./actions"
 interface RatingFormProps {
   bookId: string
   user: {
-    avatar_url: string | null
+    avatarUrl: string | null
     name: string
   }
 }
@@ -36,7 +36,7 @@ export function RatingForm({ bookId, user }: RatingFormProps) {
       <form className="space-y-6" action={formAction}>
         <header className="flex items-center gap-4">
           <Avatar size="md">
-            {user.avatar_url && <AvatarImage src={user.avatar_url} />}
+            {user.avatarUrl && <AvatarImage src={user.avatarUrl} />}
             <AvatarFallback>{getInitials(user.name)}</AvatarFallback>
           </Avatar>
 

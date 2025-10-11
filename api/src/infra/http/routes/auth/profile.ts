@@ -22,7 +22,7 @@ export const getProfile: FastifyPluginCallbackZod = (app) => {
               id: z.uuid(),
               name: z.string(),
               email: z.email(),
-              avatar_url: z.string().nullable(),
+              avatarUrl: z.string().nullable(),
             }),
           }),
         },
@@ -43,12 +43,7 @@ export const getProfile: FastifyPluginCallbackZod = (app) => {
       }
 
       return reply.status(200).send({
-        user: {
-          id: user.id,
-          name: user.name,
-          email: user.email,
-          avatar_url: user.avatarUrl,
-        },
+        user,
       })
     },
   )
