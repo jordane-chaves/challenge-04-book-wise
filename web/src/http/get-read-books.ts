@@ -9,6 +9,9 @@ export async function getReadBooks({
     headers: {
       Authorization: `Bearer ${accessToken}`,
     },
+    next: {
+      tags: ["rate-book"],
+    },
   })
 
   return response.json()

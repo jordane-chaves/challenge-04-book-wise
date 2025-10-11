@@ -3,7 +3,7 @@
 import { StarIcon } from "@phosphor-icons/react/dist/ssr"
 import { cva, type VariantProps } from "class-variance-authority"
 import clsx from "clsx"
-import { type ComponentProps, useId } from "react"
+import { type ComponentProps, useId, useState } from "react"
 import { twMerge } from "tailwind-merge"
 
 const STARS_COUNT = 5
@@ -34,18 +34,28 @@ const ratingVariants = cva(
 
 type RatingProps = ComponentProps<"div"> &
   VariantProps<typeof ratingVariants> & {
+    name?: string
     rating?: number
     onRatingChange?: (rating: number) => void
   }
 
 export function Rating({
   className,
+  name: inputName,
   rating,
   size,
   onRatingChange = () => null,
   ...props
 }: RatingProps) {
-  const name = `rating-${useId()}`
+  const [value, setValue] = useState(rating)
+
+  const nameId = useId()
+  const name = inputName ?? `rating-${nameId}`
+
+  function handleRatingChange(rating: number) {
+    setValue(rating)
+    onRatingChange(rating)
+  }
 
   return (
     <div className={twMerge(ratingVariants({ className, size }))} {...props}>
@@ -68,8 +78,9 @@ export function Rating({
               className="sr-only"
               type="radio"
               name={name}
-              checked={rating === option}
-              onChange={() => onRatingChange(option)}
+              value={option}
+              checked={value === option}
+              onChange={() => handleRatingChange(option)}
             />
 
             <StarIcon className="absolute block select-none group-has-[input:checked]:hidden group-has-[~_label_input:checked]:hidden" />

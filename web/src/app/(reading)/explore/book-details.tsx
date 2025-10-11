@@ -99,7 +99,10 @@ export async function BookDetails({ bookId }: BookDetailsProps) {
           </div>
 
           <div className="space-y-3">
-            {isAuthenticated && <RatingForm />}
+            {isAuthenticated && !isReadBook && (
+              <RatingForm bookId={bookId} user={user} />
+            )}
+
             {ratings.map((rating) => {
               return (
                 <RatingCard
