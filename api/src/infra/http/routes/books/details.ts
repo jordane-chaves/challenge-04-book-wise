@@ -1,4 +1,4 @@
-import { eq, sql } from 'drizzle-orm'
+import { countDistinct, eq, sql } from 'drizzle-orm'
 import type { FastifyPluginCallbackZod } from 'fastify-type-provider-zod'
 import z from 'zod'
 import { db } from '../../../database/drizzle/client.ts'
@@ -23,9 +23,14 @@ export const getBookDetails: FastifyPluginCallbackZod = (app) => {
               name: z.string(),
               author: z.string(),
               coverUrl: z.string(),
+              rating: z.number(),
+              ratingCount: z.number(),
               totalPages: z.number(),
               categories: z.array(z.string()),
             }),
+          }),
+          400: z.object({
+            message: z.string().meta({ example: 'Book not found' }),
           }),
         },
       },
@@ -40,7 +45,11 @@ export const getBookDetails: FastifyPluginCallbackZod = (app) => {
           author: schema.books.author,
           coverUrl: schema.books.coverUrl,
           totalPages: schema.books.totalPages,
-          categories: sql<string[]>`ARRAY_AGG(${schema.categories.name})`,
+          rating: sql<number>`CAST(AVG(${schema.ratings.rating}) AS float)`,
+          ratingsCount: countDistinct(schema.ratings.id),
+          categories: sql<
+            string[]
+          >`ARRAY_AGG(DISTINCT ${schema.categories.name})`,
         })
         .from(schema.books)
         .leftJoin(
@@ -51,6 +60,7 @@ export const getBookDetails: FastifyPluginCallbackZod = (app) => {
           schema.categories,
           eq(schema.categories.id, schema.bookCategories.categoryId),
         )
+        .leftJoin(schema.ratings, eq(schema.ratings.bookId, schema.books.id))
         .where(eq(schema.books.id, bookId))
         .groupBy(schema.books.id)
 
@@ -65,12 +75,16 @@ export const getBookDetails: FastifyPluginCallbackZod = (app) => {
         env.API_BASE_URL,
       )
 
+      const rating = Math.round(book.rating * 2) / 2 // round to half
+
       return reply.status(200).send({
         book: {
           id: book.id,
           name: book.name,
           author: book.author,
           coverUrl: coverUrl.toString(),
+          rating,
+          ratingCount: book.ratingsCount,
           totalPages: book.totalPages,
           categories: book.categories,
         },

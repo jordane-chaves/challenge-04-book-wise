@@ -10,7 +10,7 @@ export const fetchBookRatings: FastifyPluginCallbackZod = (app) => {
     {
       schema: {
         tags: ['ratings'],
-        summary: 'Get Book Ratings',
+        summary: 'Fetch Book Ratings',
         params: z.object({
           bookId: z.string(),
         }),

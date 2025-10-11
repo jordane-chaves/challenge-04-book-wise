@@ -41,6 +41,7 @@ await db.insert(schema.ratings).values(
       userId: faker.helpers.arrayElement(usersIds),
       description: faker.lorem.paragraph(),
       rating: faker.helpers.arrayElement(RATING_VALUES),
+      createdAt: faker.date.recent(),
     }
   }),
 )
