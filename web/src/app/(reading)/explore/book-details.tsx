@@ -14,13 +14,21 @@ import {
   SheetTitle,
 } from "@/components/ui/sheet"
 import { RatingFormProvider } from "@/contexts/rating-form"
+import { fetchBookRatings } from "@/http/fetch-book-ratings"
+import { getBookDetails } from "@/http/get-book-details"
 import { RateButton } from "./rate-button"
 import { RatingCard } from "./rating-card"
 import { RatingForm } from "./rating-form"
 import { SignInDialog } from "./sign-in-dialog"
 
-export async function BookDetails() {
+interface BookDetailsProps {
+  bookId: string
+}
+
+export async function BookDetails({ bookId }: BookDetailsProps) {
   const { user } = await auth()
+  const { book } = await getBookDetails({ bookId })
+  const { ratings } = await fetchBookRatings({ bookId })
 
   const isAuthenticated = !!user
 
@@ -31,7 +39,7 @@ export async function BookDetails() {
           <div className="size-full max-h-[242px] max-w-[172px] overflow-hidden rounded-[10px]">
             <Image
               className="size-auto object-cover"
-              src="http://localhost:3333/public/books/14-habitos-de-desenvolvedores-altamente-produtivos.png"
+              src={book.coverUrl}
               alt=""
               height={242}
               width={172}
@@ -40,15 +48,15 @@ export async function BookDetails() {
 
           <div className="flex flex-col justify-between">
             <header>
-              <SheetTitle>
-                14 Hábitos de Desenvolvedores Altamente Produtivos
-              </SheetTitle>
-              <SheetDescription>Zeno Rocha</SheetDescription>
+              <SheetTitle>{book.name}</SheetTitle>
+              <SheetDescription>{book.author}</SheetDescription>
             </header>
 
             <div>
-              <Rating className="-ml-1" rating={4} size="md" />
-              <p className="text-muted-foreground text-sm">3 avaliações</p>
+              <Rating className="-ml-1" rating={book.rating} size="md" />
+              <p className="text-muted-foreground text-sm">
+                {book.ratingCount} avaliações
+              </p>
             </div>
           </div>
         </div>
@@ -58,7 +66,9 @@ export async function BookDetails() {
             <BookmarkSimpleIcon className="size-6 text-accent" />
             <div>
               <p className="text-sm">Categoria</p>
-              <strong className="leading-snug">Computação, educação</strong>
+              <strong className="leading-snug">
+                {book.categories.join(", ")}
+              </strong>
             </div>
           </div>
 
@@ -66,7 +76,7 @@ export async function BookDetails() {
             <BookOpenIcon className="size-6 text-accent" />
             <div>
               <p className="text-sm">Páginas</p>
-              <strong className="leading-snug">160</strong>
+              <strong className="leading-snug">{book.totalPages}</strong>
             </div>
           </div>
         </footer>
@@ -93,9 +103,15 @@ export async function BookDetails() {
 
           <div className="space-y-3">
             {isAuthenticated && <RatingForm />}
-            <RatingCard isAuthor />
-            <RatingCard />
-            <RatingCard />
+            {ratings.map((rating) => {
+              return (
+                <RatingCard
+                  key={rating.id}
+                  isAuthor={rating.userId === user?.id}
+                  rating={rating}
+                />
+              )
+            })}
           </div>
         </div>
       </RatingFormProvider>

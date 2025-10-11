@@ -16,6 +16,7 @@
     "@t3-oss/env-nextjs": "^0.13.8",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
+    "dayjs": "^1.11.18",
     "next": "15.5.3",
     "react": "19.1.0",
     "react-dom": "19.1.0",

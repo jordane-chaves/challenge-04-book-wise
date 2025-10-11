@@ -1,16 +1,7 @@
 import { SignOutIcon } from "@phosphor-icons/react/dist/ssr"
+import { getInitials } from "@/utils/get-initials"
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar"
 import { Button } from "./ui/button"
-
-function getInitials(name: string) {
-  const initials = name
-    .split(" ")
-    .map((word) => word.charAt(0).toUpperCase())
-    .slice(0, 2)
-    .join("")
-
-  return initials
-}
 
 interface User {
   name: string

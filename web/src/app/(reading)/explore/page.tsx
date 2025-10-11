@@ -1,27 +1,28 @@
 import { BinocularsIcon } from "@phosphor-icons/react/dist/ssr"
 import Image from "next/image"
-import { auth } from "@/auth/auth"
 import { Rating } from "@/components/rating"
 import { Card } from "@/components/ui/card"
-import { Sheet, SheetTrigger } from "@/components/ui/sheet"
+import { SheetTrigger } from "@/components/ui/sheet"
 import { fetchCategories } from "@/http/fetch-categories"
 import { getReadBooks } from "@/http/get-read-books"
 import { searchBooks } from "@/http/search-books"
 import { getTokenFromCookie } from "@/lib/sessions"
 import { BookDetails } from "./book-details"
+import { BookSheet } from "./book-sheet"
 import { Categories } from "./categories"
 import { SearchForm } from "./search-form"
 
 export default async function Explore({
   searchParams,
 }: {
-  searchParams: Promise<{ categoryId?: string; q?: string }>
+  searchParams: Promise<{
+    categoryId?: string
+    q?: string
+    selectedBookId?: string
+  }>
 }) {
-  const { categoryId, q: query } = await searchParams
-  const { user } = await auth()
+  const { categoryId, q: query, selectedBookId } = await searchParams
   const accessToken = await getTokenFromCookie()
-
-  const isAuthenticated = !!user
 
   let readBooksIds: string[] = []
 
@@ -51,7 +52,7 @@ export default async function Explore({
           const isReadBook = readBooksIds.includes(book.id)
 
           return (
-            <Sheet key={book.id}>
+            <BookSheet key={book.id} bookId={book.id}>
               <SheetTrigger asChild>
                 <Card className="cursor-pointer px-5 py-4 ring-card-hover hover:ring-2">
                   <div className="flex w-full gap-5">
@@ -76,7 +77,7 @@ export default async function Explore({
                     </div>
                   </div>
 
-                  {isAuthenticated && isReadBook && (
+                  {isReadBook && (
                     <span className="absolute top-0 right-0 rounded-bl-sm bg-tag px-3 py-1 font-bold text-tag-foreground text-xs uppercase leading-tight">
                       Lido
                     </span>
@@ -84,8 +85,8 @@ export default async function Explore({
                 </Card>
               </SheetTrigger>
 
-              <BookDetails />
-            </Sheet>
+              {selectedBookId === book.id && <BookDetails bookId={book.id} />}
+            </BookSheet>
           )
         })}
       </div>
