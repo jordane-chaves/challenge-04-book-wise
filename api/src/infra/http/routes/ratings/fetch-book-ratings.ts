@@ -1,4 +1,4 @@
-import { eq } from 'drizzle-orm'
+import { desc, eq } from 'drizzle-orm'
 import type { FastifyPluginCallbackZod } from 'fastify-type-provider-zod'
 import z from 'zod'
 import { db } from '../../../database/drizzle/client.ts'
@@ -47,6 +47,7 @@ export const fetchBookRatings: FastifyPluginCallbackZod = (app) => {
         .from(schema.ratings)
         .innerJoin(schema.users, eq(schema.users.id, schema.ratings.userId))
         .where(eq(schema.ratings.bookId, bookId))
+        .orderBy(desc(schema.ratings.createdAt))
 
       return reply.status(200).send({
         ratings,
