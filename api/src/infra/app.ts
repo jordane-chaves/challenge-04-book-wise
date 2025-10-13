@@ -21,6 +21,7 @@ import { getReadBooks } from './http/routes/books/get-read-books.ts'
 import { searchBooks } from './http/routes/books/search.ts'
 import { fetchCategories } from './http/routes/categories/fetch.ts'
 import { fetchBookRatings } from './http/routes/ratings/fetch-book-ratings.ts'
+import { fetchRecentRatings } from './http/routes/ratings/fetch-recent-ratings.ts'
 import { rateBook } from './http/routes/ratings/rate-book.ts'
 import { logger } from './logger.ts'
 
@@ -77,6 +78,7 @@ app.register(authenticateWithGoogle)
 app.register(getProfile)
 app.register(fetchCategories)
 app.register(fetchBookRatings)
+app.register(fetchRecentRatings)
 app.register(getBookDetails)
 app.register(getReadBooks)
 app.register(rateBook)

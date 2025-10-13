@@ -66,9 +66,9 @@ export default async function Explore({
                       />
                     </div>
                     <div className="flex flex-col overflow-hidden">
-                      <h1 className="line-clamp-2 font-bold text-base leading-snug">
+                      <h3 className="line-clamp-2 font-bold text-base leading-snug">
                         {book.name}
-                      </h1>
+                      </h3>
                       <p className="text-muted-foreground text-sm leading-relaxed">
                         {book.author}
                       </p>
