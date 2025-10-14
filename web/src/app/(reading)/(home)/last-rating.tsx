@@ -1,19 +1,29 @@
 import { CaretRightIcon } from "@phosphor-icons/react/dist/ssr"
+import dayjs from "dayjs"
 import Image from "next/image"
 import Link from "next/link"
-import { auth } from "@/auth/auth"
 import { Rating } from "@/components/rating"
 import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
+import { getLastRating } from "@/http/get-last-rating"
+import type { GetLastRatingResponse } from "@/http/types/get-last-rating-response"
+import { getTokenFromCookie } from "@/lib/sessions"
 
 export async function LastRating() {
-  const { user } = await auth()
+  const accessToken = await getTokenFromCookie()
 
-  const isAuthenticated = !!user
+  let rating: GetLastRatingResponse["rating"] | null = null
 
-  if (!isAuthenticated) {
+  if (accessToken) {
+    const lastRatingResponse = await getLastRating({ accessToken })
+    rating = lastRatingResponse.rating
+  }
+
+  if (!rating) {
     return null
   }
+
+  const createdAtRelativeFromNow = dayjs(rating.createdAt).fromNow()
 
   return (
     <section className="space-y-4">
@@ -31,7 +41,7 @@ export async function LastRating() {
           <div className="h-[152px] w-[108px] shrink-0 overflow-hidden rounded-sm">
             <Image
               className="size-full"
-              src="http://localhost:3333/public/books/entendendo-algoritmos.png"
+              src={rating.coverUrl}
               alt=""
               height={152}
               width={108}
@@ -40,25 +50,22 @@ export async function LastRating() {
 
           <div className="w-full">
             <div className="mb-3 flex justify-between">
-              <span>Há 2 dias</span>
-              <Rating rating={4} />
+              <span className="inline-block first-letter:uppercase">
+                {createdAtRelativeFromNow}
+              </span>
+              <Rating rating={rating.rating} />
             </div>
 
             <div>
               <h3 className="line-clamp-2 font-bold text-base leading-snug">
-                Entendendo Algoritmos
+                {rating.bookName}
               </h3>
               <p className="text-muted-foreground text-sm leading-relaxed">
-                Aditya Bhargava
+                {rating.bookAuthor}
               </p>
             </div>
 
-            <p className="mt-6 line-clamp-2">
-              Lorem ipsum dolor sit amet consectetur adipisicing elit. Illo
-              nulla debitis pariatur vero, omnis earum consectetur eum error nam
-              saepe architecto libero, distinctio praesentium incidunt
-              doloremque! Fugiat voluptates voluptas nesciunt!
-            </p>
+            <p className="mt-6 line-clamp-2">{rating.description}</p>
           </div>
         </div>
       </Card>
