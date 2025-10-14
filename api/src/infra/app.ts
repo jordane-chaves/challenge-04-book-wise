@@ -17,11 +17,13 @@ import { authenticateWithGithub } from './http/routes/auth/authenticate-with-git
 import { authenticateWithGoogle } from './http/routes/auth/authenticate-with-google.ts'
 import { getProfile } from './http/routes/auth/profile.ts'
 import { getBookDetails } from './http/routes/books/details.ts'
+import { getPopularBooks } from './http/routes/books/get-popular-books.ts'
 import { getReadBooks } from './http/routes/books/get-read-books.ts'
 import { searchBooks } from './http/routes/books/search.ts'
 import { fetchCategories } from './http/routes/categories/fetch.ts'
 import { fetchBookRatings } from './http/routes/ratings/fetch-book-ratings.ts'
 import { fetchRecentRatings } from './http/routes/ratings/fetch-recent-ratings.ts'
+import { getLastRating } from './http/routes/ratings/get-last-rating.ts'
 import { rateBook } from './http/routes/ratings/rate-book.ts'
 import { logger } from './logger.ts'
 
@@ -80,6 +82,8 @@ app.register(fetchCategories)
 app.register(fetchBookRatings)
 app.register(fetchRecentRatings)
 app.register(getBookDetails)
+app.register(getLastRating)
 app.register(getReadBooks)
+app.register(getPopularBooks)
 app.register(rateBook)
 app.register(searchBooks)

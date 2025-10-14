@@ -4,39 +4,38 @@ import z from 'zod'
 import { db } from '../../../database/drizzle/client.ts'
 import { schema } from '../../../database/drizzle/schema/index.ts'
 import { env } from '../../../env.ts'
+import { verifyJWT } from '../../hooks/verify-jwt.ts'
 
-export const fetchRecentRatings: FastifyPluginCallbackZod = (app) => {
+export const getLastRating: FastifyPluginCallbackZod = (app) => {
   app.get(
-    '/ratings',
+    '/ratings/last',
     {
+      preHandler: [verifyJWT],
       schema: {
         tags: ['ratings'],
-        summary: 'Fetch Recent Ratings',
+        summary: 'Get Last Rating',
+        security: [{ bearerAuth: [] }],
         response: {
           200: z.object({
-            ratings: z.array(
-              z.object({
+            rating: z
+              .object({
                 id: z.string(),
-                userName: z.string(),
-                avatarUrl: z.string().nullable(),
                 coverUrl: z.string(),
                 bookName: z.string(),
                 bookAuthor: z.string(),
                 description: z.string(),
                 rating: z.number(),
                 createdAt: z.date(),
-              }),
-            ),
+              })
+              .nullable(),
           }),
         },
       },
     },
-    async (_, reply) => {
+    async (request, reply) => {
       const result = await db
         .select({
           id: schema.ratings.id,
-          userName: schema.users.name,
-          avatarUrl: schema.users.avatarUrl,
           coverUrl: schema.books.coverUrl,
           bookName: schema.books.name,
           bookAuthor: schema.books.author,
@@ -46,23 +45,33 @@ export const fetchRecentRatings: FastifyPluginCallbackZod = (app) => {
         })
         .from(schema.ratings)
         .innerJoin(schema.books, eq(schema.books.id, schema.ratings.bookId))
-        .innerJoin(schema.users, eq(schema.users.id, schema.ratings.userId))
+        .where(eq(schema.ratings.userId, request.user.sub))
         .orderBy(desc(schema.ratings.createdAt))
+        .limit(1)
 
-      const ratings = result.map((item) => {
-        const coverUrl = new URL(
-          `/public/books/${item.coverUrl}`,
-          env.API_BASE_URL,
-        )
+      if (result.length === 0) {
+        return reply.status(200).send({
+          rating: null,
+        })
+      }
 
-        return {
-          ...item,
-          coverUrl: coverUrl.toString(),
-        }
-      })
+      const rating = result[0]
+
+      const coverUrl = new URL(
+        `/public/books/${rating.coverUrl}`,
+        env.API_BASE_URL,
+      )
 
       return reply.status(200).send({
-        ratings,
+        rating: {
+          id: rating.id,
+          bookAuthor: rating.bookAuthor,
+          bookName: rating.bookName,
+          coverUrl: coverUrl.toString(),
+          description: rating.description,
+          rating: rating.rating,
+          createdAt: rating.createdAt,
+        },
       })
     },
   )
