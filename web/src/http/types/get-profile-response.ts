@@ -4,5 +4,6 @@ export interface GetProfileResponse {
     name: string
     email: string
     avatarUrl: string | null
+    createdAt: string
   }
 }
