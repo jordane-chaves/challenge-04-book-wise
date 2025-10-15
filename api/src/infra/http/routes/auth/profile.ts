@@ -23,6 +23,7 @@ export const getProfile: FastifyPluginCallbackZod = (app) => {
               name: z.string(),
               email: z.email(),
               avatarUrl: z.string().nullable(),
+              createdAt: z.date(),
             }),
           }),
         },
