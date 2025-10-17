@@ -7,7 +7,7 @@ import { env } from '../../../env.ts'
 
 export const fetchRecentRatings: FastifyPluginCallbackZod = (app) => {
   app.get(
-    '/ratings',
+    '/ratings/recent',
     {
       schema: {
         tags: ['ratings'],

@@ -25,6 +25,7 @@ import { fetchBookRatings } from './http/routes/ratings/fetch-book-ratings.ts'
 import { fetchRecentRatings } from './http/routes/ratings/fetch-recent-ratings.ts'
 import { getLastRating } from './http/routes/ratings/get-last-rating.ts'
 import { rateBook } from './http/routes/ratings/rate-book.ts'
+import { searchUserRatings } from './http/routes/ratings/search-user-ratings.ts'
 import { logger } from './logger.ts'
 
 export const app = fastify({ logger }).withTypeProvider<ZodTypeProvider>()
@@ -87,3 +88,4 @@ app.register(getReadBooks)
 app.register(getPopularBooks)
 app.register(rateBook)
 app.register(searchBooks)
+app.register(searchUserRatings)

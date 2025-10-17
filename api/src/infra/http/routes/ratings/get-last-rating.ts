@@ -13,7 +13,7 @@ export const getLastRating: FastifyPluginCallbackZod = (app) => {
       preHandler: [verifyJWT],
       schema: {
         tags: ['ratings'],
-        summary: 'Get Last Rating',
+        summary: 'Get Last User Rating',
         security: [{ bearerAuth: [] }],
         response: {
           200: z.object({
