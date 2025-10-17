@@ -3,9 +3,9 @@ import { redirect } from "next/navigation"
 import { auth } from "@/auth/auth"
 import { AuthorsReadAmount } from "./authors-read-amount"
 import { BookList } from "./book-list"
-import { BooksReviewedAmount } from "./books-reviewed-amount"
 import { MostReadCategory } from "./most-read-category"
 import { PagesReadAmount } from "./pages-read-amount"
+import { RatedBooksAmount } from "./rated-books-amount"
 import { SearchForm } from "./search-form"
 import { User } from "./user"
 
@@ -43,7 +43,7 @@ export default async function Profile({
           <div className="mx-auto h-1 w-8 rounded-full bg-gradient-to-r from-gradient-1 to-gradient-2" />
           <div className="space-y-10 px-14 py-5">
             <PagesReadAmount />
-            <BooksReviewedAmount />
+            <RatedBooksAmount />
             <AuthorsReadAmount />
             <MostReadCategory />
           </div>
