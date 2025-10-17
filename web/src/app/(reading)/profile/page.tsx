@@ -9,7 +9,13 @@ import { PagesReadAmount } from "./pages-read-amount"
 import { SearchForm } from "./search-form"
 import { User } from "./user"
 
-export default async function Profile() {
+export default async function Profile({
+  searchParams,
+}: {
+  searchParams: Promise<{ q?: string }>
+}) {
+  const { q: query } = await searchParams
+
   const { user } = await auth()
   const isAuthenticated = !!user
 
@@ -29,7 +35,7 @@ export default async function Profile() {
       <div className="mt-10 grid grid-cols-[1fr_308px] gap-16">
         <main className="space-y-8">
           <SearchForm />
-          <BookList />
+          <BookList query={query} />
         </main>
 
         <div className="h-fit space-y-8 border-border border-l">

@@ -1,95 +1,88 @@
+import { BookOpenIcon } from "@phosphor-icons/react/dist/ssr"
+import dayjs from "dayjs"
 import Image from "next/image"
 import { Rating } from "@/components/rating"
 import { Card } from "@/components/ui/card"
+import { searchUserRatings } from "@/http/search-user-ratings"
+import { getTokenFromCookie } from "@/lib/sessions"
 
-export function BookList() {
+interface BookListProps {
+  query?: string
+}
+
+export async function BookList({ query }: BookListProps) {
+  const accessToken = await getTokenFromCookie()
+
+  if (!accessToken) {
+    return null
+  }
+
+  const searchUserRatingsResponse = await searchUserRatings({
+    accessToken,
+    query,
+  })
+
   return (
     <div className="space-y-6">
-      <section className="space-y-2">
-        <div>
-          <span className="text-muted-foreground text-sm leading-relaxed">
-            Há 2 dias
-          </span>
+      {Object.keys(searchUserRatingsResponse.ratings).length === 0 && (
+        <div className="flex flex-col items-center justify-center gap-4 px-8 py-32">
+          <BookOpenIcon className="size-20 text-accent" />
+          <p className="text-lg text-muted-foreground">
+            Nenhum livro encontrado
+          </p>
         </div>
+      )}
 
-        <div className="space-y-4">
-          <Card className="space-y-6">
-            <div className="flex gap-6">
-              <div className="h-[134px] w-[98px] shrink-0 overflow-hidden rounded-sm">
-                <Image
-                  className="size-full"
-                  src="http://localhost:3333/public/books/entendendo-algoritmos.png"
-                  alt=""
-                  height={134}
-                  width={98}
-                />
+      {Object.entries(searchUserRatingsResponse.ratings).map(
+        ([date, ratings]) => {
+          const dateRelativeFromNow = dayjs(date).fromNow()
+
+          return (
+            <section key={date} className="space-y-2">
+              <div>
+                <span className="inline-block text-muted-foreground text-sm leading-relaxed first-letter:uppercase">
+                  {dateRelativeFromNow}
+                </span>
               </div>
 
-              <div className="flex w-full flex-col">
-                <h3 className="line-clamp-2 font-bold text-lg leading-snug">
-                  Entendendo Algoritmos
-                </h3>
-                <p className="text-muted-foreground text-sm leading-relaxed">
-                  Aditya Bhargava
-                </p>
+              <div className="space-y-4">
+                {ratings.map((item) => {
+                  return (
+                    <Card key={item.id} className="space-y-6">
+                      <div className="flex gap-6">
+                        <div className="h-[134px] w-[98px] shrink-0 overflow-hidden rounded-sm">
+                          <Image
+                            className="size-full"
+                            src={item.coverUrl}
+                            alt=""
+                            height={134}
+                            width={98}
+                          />
+                        </div>
 
-                <Rating className="mt-auto" rating={4} />
+                        <div className="flex w-full flex-col">
+                          <h3 className="line-clamp-2 font-bold text-lg leading-snug">
+                            {item.name}
+                          </h3>
+                          <p className="text-muted-foreground text-sm leading-relaxed">
+                            {item.author}
+                          </p>
+
+                          <Rating className="mt-auto" rating={item.rating} />
+                        </div>
+                      </div>
+
+                      <p className="text-sm leading-relaxed">
+                        {item.description}
+                      </p>
+                    </Card>
+                  )
+                })}
               </div>
-            </div>
-
-            <p className="text-sm leading-relaxed">
-              Tristique massa sed enim lacinia odio. Congue ut faucibus nunc
-              vitae non. Nam feugiat vel morbi viverra vitae mi. Vitae fringilla
-              ut et suspendisse enim suspendisse vitae. Leo non eget lacus
-              sollicitudin tristique pretium quam. Mollis et luctus amet sed
-              convallis varius massa sagittis. Proin sed proin at leo quis ac
-              sem. Nam donec accumsan curabitur amet tortor quam sit. Bibendum
-              enim sit dui lorem urna amet elit rhoncus ut. Aliquet euismod
-              vitae ut turpis. Aliquam amet integer pellentesque.
-            </p>
-          </Card>
-        </div>
-      </section>
-
-      <section className="space-y-2">
-        <div>
-          <span className="text-muted-foreground text-sm leading-relaxed">
-            Há 4 meses
-          </span>
-        </div>
-
-        <div className="space-y-4">
-          <Card className="space-y-6">
-            <div className="flex gap-6">
-              <div className="h-[134px] w-[98px] shrink-0 overflow-hidden rounded-sm">
-                <Image
-                  className="size-full"
-                  src="http://localhost:3333/public/books/o-hobbit.png"
-                  alt=""
-                  height={134}
-                  width={98}
-                />
-              </div>
-
-              <div className="flex w-full flex-col">
-                <h3 className="line-clamp-2 font-bold text-lg leading-snug">
-                  O Hobbit
-                </h3>
-                <p className="text-muted-foreground text-sm leading-relaxed">
-                  J.R.R. Tolkien
-                </p>
-
-                <Rating className="mt-auto" rating={4} />
-              </div>
-            </div>
-
-            <p className="text-sm leading-relaxed">
-              Nec tempor nunc in egestas. Euismod nisi eleifend at et in
-              sagittis. Penatibus id vestibulum imperdiet a at imperdiet.
-            </p>
-          </Card>
-        </div>
-      </section>
+            </section>
+          )
+        },
+      )}
     </div>
   )
 }
