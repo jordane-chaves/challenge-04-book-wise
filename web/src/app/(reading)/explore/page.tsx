@@ -1,4 +1,4 @@
-import { BinocularsIcon } from "@phosphor-icons/react/dist/ssr"
+import { BinocularsIcon, BookOpenIcon } from "@phosphor-icons/react/dist/ssr"
 import Image from "next/image"
 import { Rating } from "@/components/rating"
 import { Card } from "@/components/ui/card"
@@ -46,6 +46,15 @@ export default async function Explore({
       </header>
 
       <Categories categories={categoriesResponse.categories} />
+
+      {booksResponse.books.length === 0 && (
+        <div className="flex flex-col items-center justify-center gap-4 px-8 py-52">
+          <BookOpenIcon className="size-20 text-accent" />
+          <p className="text-lg text-muted-foreground">
+            Nenhum livro encontrado
+          </p>
+        </div>
+      )}
 
       <div className="mt-12 grid grid-cols-3 gap-5">
         {booksResponse.books.map((book) => {

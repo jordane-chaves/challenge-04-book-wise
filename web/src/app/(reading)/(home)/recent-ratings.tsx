@@ -1,3 +1,4 @@
+import { SparkleIcon } from "@phosphor-icons/react/dist/ssr"
 import dayjs from "dayjs"
 import Image from "next/image"
 import { Rating } from "@/components/rating"
@@ -17,6 +18,15 @@ export async function RecentRatings() {
       </div>
 
       <div className="space-y-3">
+        {recentRatingsResponse.ratings.length === 0 && (
+          <div className="flex flex-col items-center justify-center gap-4 px-8 py-32">
+            <SparkleIcon className="size-20 text-accent" />
+            <p className="text-lg text-muted-foreground">
+              Nenhuma avaliação encontrada
+            </p>
+          </div>
+        )}
+
         {recentRatingsResponse.ratings.map((rating) => {
           const createdAtRelativeFromNow = dayjs(rating.createdAt).fromNow()
 

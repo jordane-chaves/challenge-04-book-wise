@@ -1,4 +1,4 @@
-import { CaretRightIcon } from "@phosphor-icons/react/dist/ssr"
+import { BookOpenIcon, CaretRightIcon } from "@phosphor-icons/react/dist/ssr"
 import Image from "next/image"
 import Link from "next/link"
 import { Rating } from "@/components/rating"
@@ -21,6 +21,15 @@ export async function PopularBooks() {
       </div>
 
       <div className="space-y-3">
+        {popularBooksResponse.books.length === 0 && (
+          <div className="flex flex-col items-center justify-center gap-4 px-8 py-32">
+            <BookOpenIcon className="size-16 text-accent" />
+            <p className="text-lg text-muted-foreground">
+              Nenhum livro encontrado
+            </p>
+          </div>
+        )}
+
         {popularBooksResponse.books.map((book) => {
           return (
             <Card key={book.id} className="px-5 py-4">
