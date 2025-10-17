@@ -21,6 +21,10 @@ import { getPopularBooks } from './http/routes/books/get-popular-books.ts'
 import { getReadBooks } from './http/routes/books/get-read-books.ts'
 import { searchBooks } from './http/routes/books/search.ts'
 import { fetchCategories } from './http/routes/categories/fetch.ts'
+import { getAuthorsReadAmount } from './http/routes/metrics/get-authors-read-amount.ts'
+import { getMostReadCategory } from './http/routes/metrics/get-most-read-category.ts'
+import { getPagesReadAmount } from './http/routes/metrics/get-pages-read-amount.ts'
+import { getRatedBooksAmount } from './http/routes/metrics/get-rated-books-amount.ts'
 import { fetchBookRatings } from './http/routes/ratings/fetch-book-ratings.ts'
 import { fetchRecentRatings } from './http/routes/ratings/fetch-recent-ratings.ts'
 import { getLastRating } from './http/routes/ratings/get-last-rating.ts'
@@ -89,3 +93,7 @@ app.register(getPopularBooks)
 app.register(rateBook)
 app.register(searchBooks)
 app.register(searchUserRatings)
+app.register(getAuthorsReadAmount)
+app.register(getMostReadCategory)
+app.register(getPagesReadAmount)
+app.register(getRatedBooksAmount)
