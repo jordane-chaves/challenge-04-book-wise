@@ -7,6 +7,3 @@ services:
       POSTGRES_USER: docker
       POSTGRES_PASSWORD: docker
       POSTGRES_DB: book-wise-db
-      PGDATA: /data/postgres
-    volumes:
-      - ./data/pg:/data/postgres
