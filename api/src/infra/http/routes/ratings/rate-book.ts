@@ -24,6 +24,9 @@ export const rateBook: FastifyPluginCallbackZod = (app) => {
         }),
         response: {
           201: z.void(),
+          400: z
+            .object({ message: z.string() })
+            .meta({ example: { message: 'You have already rated this book' } }),
         },
       },
     },

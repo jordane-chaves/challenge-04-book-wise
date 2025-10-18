@@ -29,9 +29,9 @@ export const getBookDetails: FastifyPluginCallbackZod = (app) => {
               categories: z.array(z.string()),
             }),
           }),
-          400: z.object({
-            message: z.string().meta({ example: 'Book not found' }),
-          }),
+          400: z
+            .object({ message: z.string() })
+            .meta({ example: { message: 'Book not found' } }),
         },
       },
     },
