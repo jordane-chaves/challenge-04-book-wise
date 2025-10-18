@@ -1,4 +1,3 @@
-import { faker } from '@faker-js/faker'
 import { and, desc, eq, ilike, sql } from 'drizzle-orm'
 import type { FastifyPluginCallbackZod } from 'fastify-type-provider-zod'
 import z from 'zod'
@@ -43,7 +42,8 @@ export const searchUserRatings: FastifyPluginCallbackZod = (app) => {
                     author: 'Isaac Asimov',
                     name: 'O fim da eternidade',
                     coverUrl: 'o-fim-da-eternidade.png',
-                    description: faker.lorem.paragraph(),
+                    description:
+                      'Celebrer alii consectetur desparatus summa. Dolor crudelis appositus subnecto uter crustulum perferendis approbo depulso. Traho voveo talis.',
                     rating: 4.5,
                   },
                 ],
@@ -53,7 +53,8 @@ export const searchUserRatings: FastifyPluginCallbackZod = (app) => {
                     author: 'Eric Evans',
                     name: 'Domain-Driven Design',
                     coverUrl: 'domain-driven-design.png',
-                    description: faker.lorem.paragraph(),
+                    description:
+                      'Utilis asperiores vobis quisquam adversus. Curtus a conservo somnus cupressus volup consectetur vos. Deinde quaerat terga tamdiu arceo maiores cavus velut.',
                     rating: 2.5,
                   },
                 ],

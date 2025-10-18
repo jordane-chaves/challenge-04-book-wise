@@ -5,7 +5,7 @@ const envSchema = z.object({
     .enum(['development', 'production', 'test'])
     .default('development'),
   HOST: z.ipv4().or(z.ipv6()).default('0.0.0.0'),
-  PORT: z.number().default(3333),
+  PORT: z.coerce.number().default(3333),
   LOG_LEVEL: z
     .enum(['fatal', 'error', 'warn', 'info', 'debug', 'trace'])
     .default('info'),
