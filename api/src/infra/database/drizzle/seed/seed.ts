@@ -1,4 +1,5 @@
 import { faker } from '@faker-js/faker'
+import type { PgInsertValue } from 'drizzle-orm/pg-core'
 import { db } from '../client.ts'
 import { schema } from '../schema/index.ts'
 import { bookCategories } from './book-categories.ts'
@@ -27,24 +28,33 @@ const users = await db
   )
   .returning()
 
+/**
+ * Create ratings
+ */
+const HALF_RATING_VALUES = [0.5, 1, 1.5, 2, 2.5, 3, 3.5, 4, 4.5, 5]
+
 const booksIds = books.map((book) => book.id)
 const usersIds = users.map((user) => user.id)
 
-const RATING_VALUES = Array.from({ length: 10 }).map(
-  (_, index) => (index + 1) / 2,
-)
+const possibleUserRatings = booksIds.flatMap((bookId) => {
+  return usersIds.map((userId) => ({ bookId, userId }))
+})
 
-await db.insert(schema.ratings).values(
-  Array.from({ length: 100 }).map(() => {
+const totalRatings = faker.number.int(possibleUserRatings.length)
+
+const ratings: PgInsertValue<typeof schema.ratings>[] = possibleUserRatings
+  .slice(0, totalRatings)
+  .map((item) => {
     return {
-      bookId: faker.helpers.arrayElement(booksIds),
-      userId: faker.helpers.arrayElement(usersIds),
+      bookId: item.bookId,
+      userId: item.userId,
       description: faker.lorem.paragraph(),
-      rating: faker.helpers.arrayElement(RATING_VALUES),
+      rating: faker.helpers.arrayElement(HALF_RATING_VALUES),
       createdAt: faker.date.recent(),
     }
-  }),
-)
+  })
+
+await db.insert(schema.ratings).values(ratings)
 
 await db.$client.end()
 
