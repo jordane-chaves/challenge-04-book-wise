@@ -35,7 +35,8 @@ export async function BookList({ query }: BookListProps) {
 
       {Object.entries(searchUserRatingsResponse.ratings).map(
         ([date, ratings]) => {
-          const dateRelativeFromNow = dayjs(date).fromNow()
+          const isSameDay = dayjs(new Date()).diff(date, "days") === 0
+          const dateRelativeFromNow = isSameDay ? "Hoje" : dayjs(date).fromNow()
 
           return (
             <section key={date} className="space-y-2">
