@@ -16,7 +16,7 @@ export async function MostReadCategory() {
       <BookmarkSimpleIcon className="size-8 text-accent" />
       <div>
         <strong className="leading-snug">
-          {mostReadCategoryResponse.category}
+          {mostReadCategoryResponse.category ?? "-"}
         </strong>
         <p className="text-muted-foreground text-sm leading-relaxed">
           Categoria mais lida

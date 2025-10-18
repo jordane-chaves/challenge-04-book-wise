@@ -1,6 +1,7 @@
 import {
   BookmarkSimpleIcon,
   BookOpenIcon,
+  SparkleIcon,
 } from "@phosphor-icons/react/dist/ssr"
 import Image from "next/image"
 import { auth } from "@/auth/auth"
@@ -101,6 +102,15 @@ export async function BookDetails({ bookId }: BookDetailsProps) {
           <div className="space-y-3">
             {isAuthenticated && !isReadBook && (
               <RatingForm bookId={bookId} user={user} />
+            )}
+
+            {ratings.length === 0 && (
+              <div className="flex flex-col items-center justify-center gap-4 px-8 py-16">
+                <SparkleIcon className="size-16 text-accent" />
+                <p className="text-base text-muted-foreground">
+                  Seja o primeiro a avaliar este livro.
+                </p>
+              </div>
             )}
 
             {ratings.map((rating) => {
