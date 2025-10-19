@@ -6,6 +6,7 @@ const envSchema = z.object({
     .default('development'),
   HOST: z.ipv4().or(z.ipv6()).default('0.0.0.0'),
   PORT: z.coerce.number().default(3333),
+  CORS_ORIGIN: z.string().default('*'),
   LOG_LEVEL: z
     .enum(['fatal', 'error', 'warn', 'info', 'debug', 'trace'])
     .default('info'),

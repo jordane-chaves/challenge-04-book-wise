@@ -38,7 +38,7 @@ app.setErrorHandler(errorHandler)
 app.setValidatorCompiler(validatorCompiler)
 app.setSerializerCompiler(serializerCompiler)
 
-app.register(fastifyCors, { origin: '*' })
+app.register(fastifyCors, { origin: env.CORS_ORIGIN })
 app.register(fastifyJwt, {
   secret: env.JWT_SECRET,
 })
