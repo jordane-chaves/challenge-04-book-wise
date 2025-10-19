@@ -23,9 +23,11 @@
 
 ## 💻 Projeto
 
-**BookWise** é uma aplicação web para avaliação e gerenciamento de leituras. 
+**BookWise** é uma aplicação web para avaliação e gerenciamento de leituras.
 
-Para concluir este desafio, decidi separar o projeto em duas aplicações:
+Um dos maiores desafios que tive nesta aplicação foi a parte de autenticação social com o Google e Github, pois, decidi fazer este fluxo sem dependências externas, construindo todo o fluxo "na mão". Dessa forma pude entender melhor como funciona o fluxo de autenticação social (OAuth) e aprimorar meus conhecimentos.
+
+Para concluir este desafio, separei o projeto em duas aplicações:
 - **api**: Construída em Node.js (Fastify)
 - **web**: Construída em React.js (Next.js)
 
