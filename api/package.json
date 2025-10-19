@@ -6,6 +6,7 @@
   "main": "index.js",
   "scripts": {
     "start:dev": "node --env-file .env --watch src/infra/server.ts",
+    "prestart": "drizzle-kit migrate && node src/infra/database/drizzle/seed/seed.ts",
     "start": "node src/infra/server.ts",
     "lint": "biome check",
     "format": "biome format --write",
