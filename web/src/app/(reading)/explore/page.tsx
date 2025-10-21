@@ -1,6 +1,7 @@
 import { BinocularsIcon, BookOpenIcon } from "@phosphor-icons/react/dist/ssr"
 import Image from "next/image"
 import { Rating } from "@/components/rating"
+import { SidebarButton } from "@/components/sidebar-button"
 import { Card } from "@/components/ui/card"
 import { SheetTrigger } from "@/components/ui/sheet"
 import { fetchCategories } from "@/http/fetch-categories"
@@ -36,8 +37,9 @@ export default async function Explore({
 
   return (
     <div>
-      <header className="flex justify-between">
+      <header className="flex flex-wrap justify-between gap-5">
         <div className="flex items-center gap-3">
+          <SidebarButton />
           <BinocularsIcon className="size-8 shrink-0 text-accent" />
           <h1 className="font-bold text-2xl leading-snug">Explorar</h1>
         </div>
@@ -56,7 +58,7 @@ export default async function Explore({
         </div>
       )}
 
-      <div className="mt-12 grid grid-cols-3 gap-5">
+      <div className="mt-12 grid grid-cols-[repeat(auto-fit,minmax(300px,1fr))] gap-5">
         {booksResponse.books.map((book) => {
           const isReadBook = readBooksIds.includes(book.id)
 
@@ -65,7 +67,7 @@ export default async function Explore({
               <SheetTrigger asChild>
                 <Card className="cursor-pointer px-5 py-4 ring-card-hover hover:ring-2">
                   <div className="flex w-full gap-5">
-                    <div className="h-[152px] w-[108px] shrink-0 overflow-hidden rounded-sm">
+                    <div className="h-[94px] w-[64px] shrink-0 overflow-hidden rounded-sm sm:h-[152px] sm:w-[108px]">
                       <Image
                         className="size-full"
                         src={book.coverUrl}

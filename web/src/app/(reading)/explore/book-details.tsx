@@ -45,10 +45,10 @@ export async function BookDetails({ bookId }: BookDetailsProps) {
   return (
     <SheetContent>
       <Card className="min-h-max space-y-10 px-8 py-6">
-        <div className="flex gap-8">
-          <div className="size-full max-h-[242px] max-w-[172px] overflow-hidden rounded-[10px]">
+        <div className="flex flex-wrap gap-8">
+          <div className="size-full max-h-[242px] max-w-[172px] shrink-0 overflow-hidden rounded-[10px]">
             <Image
-              className="size-auto object-cover"
+              className="size-full object-cover"
               src={book.coverUrl}
               alt=""
               height={242}
@@ -71,9 +71,9 @@ export async function BookDetails({ bookId }: BookDetailsProps) {
           </div>
         </div>
 
-        <footer className="flex gap-14 border-border border-t pt-6">
+        <footer className="flex flex-wrap gap-6 border-border border-t pt-6 sm:gap-14">
           <div className="flex items-center gap-4 px-1">
-            <BookmarkSimpleIcon className="size-6 text-accent" />
+            <BookmarkSimpleIcon className="size-6 shrink-0 text-accent" />
             <div>
               <p className="text-sm">Categoria</p>
               <strong className="leading-snug">
@@ -83,7 +83,7 @@ export async function BookDetails({ bookId }: BookDetailsProps) {
           </div>
 
           <div className="flex items-center gap-4 px-1">
-            <BookOpenIcon className="size-6 text-accent" />
+            <BookOpenIcon className="size-6 shrink-0 text-accent" />
             <div>
               <p className="text-sm">Páginas</p>
               <strong className="leading-snug">{book.totalPages}</strong>

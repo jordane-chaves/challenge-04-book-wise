@@ -43,13 +43,13 @@ export function SheetContent({
       <SheetOverlay />
       <SheetPrimitive.Content
         className={twMerge(
-          "fixed inset-y-0 right-0 z-50 flex h-full w-3/4 flex-col gap-10 overflow-x-auto bg-background px-12 py-16 shadow-xl transition ease-in-out sm:max-w-[660px]",
+          "fixed inset-y-0 right-0 z-50 flex h-full flex-col gap-10 overflow-x-auto bg-background px-8 py-12 shadow-xl transition ease-in-out sm:w-3/4 sm:max-w-[660px] sm:px-12 sm:py-16",
           className,
         )}
         {...props}
       >
         {children}
-        <SheetPrimitive.Close className="absolute top-6 right-6 rounded-xs text-muted-foreground opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-hidden focus:ring-2 focus:ring-accent focus:ring-offset-2 disabled:pointer-events-none">
+        <SheetPrimitive.Close className="absolute top-3 right-3 rounded-xs text-muted-foreground opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-hidden focus:ring-2 focus:ring-accent focus:ring-offset-2 disabled:pointer-events-none sm:top-6 sm:right-6">
           <XIcon className="size-6" />
           <span className="sr-only">Close</span>
         </SheetPrimitive.Close>

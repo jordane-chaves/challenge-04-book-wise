@@ -13,7 +13,7 @@ export function RatingDescription({ description }: RatingDescriptionProps) {
 
   if (description.length > MAX_DESCRIPTION_CHARS && !showFullDescription) {
     return (
-      <p className="mt-5 line-clamp-4">
+      <p className="mt-5 line-clamp-4 text-sm sm:text-base">
         {description.slice(0, MAX_DESCRIPTION_CHARS)}{" "}
         <button
           type="button"
@@ -26,5 +26,5 @@ export function RatingDescription({ description }: RatingDescriptionProps) {
     )
   }
 
-  return <p className="mt-5 line-clamp-4">{description}</p>
+  return <p className="mt-5 line-clamp-4 text-sm sm:text-base">{description}</p>
 }

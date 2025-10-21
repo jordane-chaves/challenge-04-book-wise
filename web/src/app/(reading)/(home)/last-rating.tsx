@@ -36,9 +36,9 @@ export async function LastRating() {
         </Link>
       </div>
 
-      <Card className="bg-card-hover px-6 py-5">
+      <Card className="bg-card-hover px-5 py-4 sm:px-6 sm:py-5">
         <div className="flex gap-6">
-          <div className="h-[152px] w-[108px] shrink-0 overflow-hidden rounded-sm">
+          <div className="h-[94px] w-[64px] shrink-0 overflow-hidden rounded-sm sm:h-[152px] sm:w-[108px]">
             <Image
               className="size-full"
               src={rating.coverUrl}
@@ -50,9 +50,9 @@ export async function LastRating() {
 
           <div className="w-full">
             <div className="mb-3 flex justify-between">
-              <span className="inline-block first-letter:uppercase">
+              <time className="inline-block gap-2 text-xs first-letter:uppercase sm:text-base">
                 {createdAtRelativeFromNow}
-              </span>
+              </time>
               <Rating rating={rating.rating} />
             </div>
 

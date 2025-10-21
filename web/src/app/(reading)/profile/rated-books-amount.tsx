@@ -13,7 +13,7 @@ export async function RatedBooksAmount() {
 
   return (
     <div className="flex items-center gap-5">
-      <BooksIcon className="size-8 text-accent" />
+      <BooksIcon className="size-8 shrink-0 text-accent" />
       <div>
         <strong className="leading-snug">
           {ratedBooksAmountResponse.amount}

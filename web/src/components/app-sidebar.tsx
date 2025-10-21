@@ -6,6 +6,7 @@ import sidebarBackgroundImg from "@/assets/sidebar-background.png"
 import { auth } from "@/auth/auth"
 import { NavMain } from "./nav-main"
 import { NavUser } from "./nav-user"
+import { Sidebar } from "./sidebar"
 import { Button } from "./ui/button"
 
 export async function AppSidebar() {
@@ -14,7 +15,7 @@ export async function AppSidebar() {
   const isAuthenticated = !!user
 
   return (
-    <div className="h-dvh shrink-0 py-5 pl-5">
+    <Sidebar>
       <div className="relative h-full w-[232px] overflow-hidden rounded-xl">
         <Image
           src={sidebarBackgroundImg}
@@ -56,6 +57,6 @@ export async function AppSidebar() {
           </footer>
         </aside>
       </div>
-    </div>
+    </Sidebar>
   )
 }

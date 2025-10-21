@@ -13,7 +13,7 @@ export async function AuthorsReadAmount() {
 
   return (
     <div className="flex items-center gap-5">
-      <UserListIcon className="size-8 text-accent" />
+      <UserListIcon className="size-8 shrink-0 text-accent" />
       <div>
         <strong className="leading-snug">
           {authorsReadAmountResponse.amount}

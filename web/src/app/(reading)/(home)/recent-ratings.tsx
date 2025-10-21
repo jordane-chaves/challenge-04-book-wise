@@ -42,16 +42,16 @@ export async function RecentRatings() {
 
                 <div className="flex-1">
                   <p className="leading-relaxed">{rating.userName}</p>
-                  <span className="inline-block text-muted-foreground text-sm leading-relaxed first-letter:uppercase">
+                  <time className="inline-block text-muted-foreground text-sm leading-relaxed first-letter:uppercase">
                     {createdAtRelativeFromNow}
-                  </span>
+                  </time>
                 </div>
 
                 <Rating rating={rating.rating} />
               </header>
 
               <div className="flex gap-5">
-                <div className="h-[152px] w-[108px] shrink-0 overflow-hidden rounded-sm">
+                <div className="h-[94px] w-[64px] shrink-0 overflow-hidden rounded-sm sm:h-[152px] sm:w-[108px]">
                   <Image
                     className="size-full"
                     src={rating.coverUrl}

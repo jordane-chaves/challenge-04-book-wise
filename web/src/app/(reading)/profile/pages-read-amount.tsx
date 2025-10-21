@@ -13,7 +13,7 @@ export async function PagesReadAmount() {
 
   return (
     <div className="flex items-center gap-5">
-      <BookOpenIcon className="size-8 text-accent" />
+      <BookOpenIcon className="size-8 shrink-0 text-accent" />
       <div>
         <strong className="leading-snug">
           {pagesReadAmountResponse.amount}
