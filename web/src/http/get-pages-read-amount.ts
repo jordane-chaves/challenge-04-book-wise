@@ -9,6 +9,9 @@ export async function getPagesReadAmount({
     headers: {
       Authorization: `Bearer ${accessToken}`,
     },
+    next: {
+      tags: ["rate-book"],
+    },
   })
 
   if (!response.ok) {

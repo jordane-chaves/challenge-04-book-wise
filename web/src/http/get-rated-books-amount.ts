@@ -9,6 +9,9 @@ export async function getRatedBooksAmount({
     headers: {
       Authorization: `Bearer ${accessToken}`,
     },
+    next: {
+      tags: ["rate-book"],
+    },
   })
 
   if (!response.ok) {

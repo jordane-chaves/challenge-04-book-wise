@@ -16,7 +16,11 @@ export async function searchBooks({
     searchParams.set("query", query)
   }
 
-  const response = await api(`/books?${searchParams.toString()}`)
+  const response = await api(`/books?${searchParams.toString()}`, {
+    next: {
+      revalidate: 60 * 60 * 24, // 24 hours
+    },
+  })
 
   return response.json()
 }

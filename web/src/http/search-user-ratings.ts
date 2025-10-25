@@ -16,6 +16,9 @@ export async function searchUserRatings({
     headers: {
       Authorization: `Bearer ${accessToken}`,
     },
+    next: {
+      tags: ["rate-book"],
+    },
   })
 
   return response.json()
