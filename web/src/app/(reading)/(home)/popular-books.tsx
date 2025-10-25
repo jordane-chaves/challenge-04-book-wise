@@ -21,7 +21,7 @@ export async function PopularBooks() {
       </div>
 
       <div className="space-y-3">
-        {popularBooksResponse.books.length === 0 && (
+        {!popularBooksResponse?.books?.length && (
           <div className="flex flex-col items-center justify-center gap-4 px-8 py-32">
             <BookOpenIcon className="size-16 text-accent" />
             <p className="text-lg text-muted-foreground">
@@ -30,7 +30,7 @@ export async function PopularBooks() {
           </div>
         )}
 
-        {popularBooksResponse.books.map((book) => {
+        {popularBooksResponse?.books?.map((book) => {
           return (
             <Card key={book.id} className="px-5 py-4">
               <div className="flex gap-5">

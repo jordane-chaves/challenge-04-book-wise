@@ -47,9 +47,9 @@ export default async function Explore({
         <SearchForm />
       </header>
 
-      <Categories categories={categoriesResponse.categories} />
+      <Categories categories={categoriesResponse?.categories ?? []} />
 
-      {booksResponse.books.length === 0 && (
+      {booksResponse?.books?.length === 0 && (
         <div className="flex flex-col items-center justify-center gap-4 px-8 py-52">
           <BookOpenIcon className="size-20 text-accent" />
           <p className="text-lg text-muted-foreground">
@@ -59,7 +59,7 @@ export default async function Explore({
       )}
 
       <div className="mt-12 grid grid-cols-[repeat(auto-fit,minmax(300px,1fr))] gap-5">
-        {booksResponse.books.map((book) => {
+        {booksResponse?.books?.map((book) => {
           const isReadBook = readBooksIds.includes(book.id)
 
           return (

@@ -18,7 +18,7 @@ export async function RecentRatings() {
       </div>
 
       <div className="space-y-3">
-        {recentRatingsResponse.ratings.length === 0 && (
+        {!recentRatingsResponse?.ratings?.length && (
           <div className="flex flex-col items-center justify-center gap-4 px-8 py-32">
             <SparkleIcon className="size-20 text-accent" />
             <p className="text-lg text-muted-foreground">
@@ -27,7 +27,7 @@ export async function RecentRatings() {
           </div>
         )}
 
-        {recentRatingsResponse.ratings.map((rating) => {
+        {recentRatingsResponse?.ratings?.map((rating) => {
           const createdAtRelativeFromNow = dayjs(rating.createdAt).fromNow()
 
           return (

@@ -21,7 +21,7 @@ export default async function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <html className={nunitoSans.variable} lang="pt">
+    <html className={nunitoSans.variable} lang="pt-BR">
       <body className="custom-scrollbar flex min-h-screen w-full flex-col bg-background text-foreground antialiased">
         {children}
       </body>
