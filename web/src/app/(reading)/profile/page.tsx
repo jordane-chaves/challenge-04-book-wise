@@ -1,14 +1,18 @@
 import { UserIcon } from "@phosphor-icons/react/dist/ssr"
 import { redirect } from "next/navigation"
+import { Suspense } from "react"
 import { auth } from "@/auth/auth"
 import { SidebarButton } from "@/components/sidebar-button"
 import { AuthorsReadAmount } from "./authors-read-amount"
 import { BookList } from "./book-list"
+import { BookListLoading } from "./book-list-loading"
+import { MetricsLoading } from "./metrics-loading"
 import { MostReadCategory } from "./most-read-category"
 import { PagesReadAmount } from "./pages-read-amount"
 import { RatedBooksAmount } from "./rated-books-amount"
 import { SearchForm } from "./search-form"
 import { User } from "./user"
+import { UserLoading } from "./user-loading"
 
 export default async function Profile({
   searchParams,
@@ -37,18 +41,24 @@ export default async function Profile({
       <div className="mt-10 grid grid-cols-1 gap-16 lg:grid-cols-[1fr_308px]">
         <main className="space-y-8">
           <SearchForm />
-          <BookList query={query} />
+          <Suspense fallback={<BookListLoading />}>
+            <BookList query={query} />
+          </Suspense>
         </main>
 
         <div className="-order-1 h-fit space-y-8 border-border border-b lg:order-none lg:border-b-0 lg:border-l">
-          <User />
+          <Suspense fallback={<UserLoading />}>
+            <User />
+          </Suspense>
           <div className="mx-auto h-1 w-8 rounded-full bg-gradient-to-r from-gradient-1 to-gradient-2" />
-          <div className="grid grid-cols-2 gap-4 px-8 py-5 md:px-14 lg:grid-cols-1 lg:gap-10">
-            <PagesReadAmount />
-            <RatedBooksAmount />
-            <AuthorsReadAmount />
-            <MostReadCategory />
-          </div>
+          <Suspense fallback={<MetricsLoading />}>
+            <div className="grid grid-cols-2 gap-4 px-8 py-5 md:px-14 lg:grid-cols-1 lg:gap-10">
+              <PagesReadAmount />
+              <RatedBooksAmount />
+              <AuthorsReadAmount />
+              <MostReadCategory />
+            </div>
+          </Suspense>
         </div>
       </div>
     </div>

@@ -28,6 +28,7 @@
   --accent: var(--green-100);
   --accent-foreground: var(--gray-100);
   --destructive: #f75a68;
+  --skeleton: var(--gray-600);
   --border: var(--gray-600);
   --button: var(--gray-600);
   --button-foreground: var(--gray-200);
@@ -59,6 +60,7 @@
   --color-accent: var(--accent);
   --color-accent-foreground: var(--accent-foreground);
   --color-destructive: var(--destructive);
+  --color-skeleton: var(--skeleton);
   --color-border: var(--border);
   --color-button: var(--button);
   --color-button-foreground: var(--button-foreground);

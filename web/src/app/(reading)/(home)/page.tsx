@@ -1,8 +1,12 @@
 import { ChartLineUpIcon } from "@phosphor-icons/react/dist/ssr"
+import { Suspense } from "react"
 import { SidebarButton } from "@/components/sidebar-button"
 import { LastRating } from "./last-rating"
+import { LastRatingLoading } from "./last-rating-loading"
 import { PopularBooks } from "./popular-books"
+import { PopularBooksLoading } from "./popular-books-loading"
 import { RecentRatings } from "./recent-ratings"
+import { RecentRatingsLoading } from "./recent-ratings-loading"
 
 export default function Home() {
   return (
@@ -17,11 +21,17 @@ export default function Home() {
 
       <div className="mt-10 grid grid-cols-1 gap-16 lg:grid-cols-[1fr_324px]">
         <main className="order-2 space-y-10 lg:order-none">
-          <LastRating />
-          <RecentRatings />
+          <Suspense fallback={<LastRatingLoading />}>
+            <LastRating />
+          </Suspense>
+          <Suspense fallback={<RecentRatingsLoading />}>
+            <RecentRatings />
+          </Suspense>
         </main>
 
-        <PopularBooks />
+        <Suspense fallback={<PopularBooksLoading />}>
+          <PopularBooks />
+        </Suspense>
       </div>
     </div>
   )
