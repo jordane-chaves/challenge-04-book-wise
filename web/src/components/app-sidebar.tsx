@@ -18,6 +18,7 @@ export async function AppSidebar() {
     <Sidebar>
       <div className="relative h-full w-[232px] overflow-hidden rounded-xl">
         <Image
+          className="object-cover"
           src={sidebarBackgroundImg}
           alt=""
           sizes="100%"

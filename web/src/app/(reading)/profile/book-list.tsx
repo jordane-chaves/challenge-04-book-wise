@@ -54,7 +54,7 @@ export async function BookList({ query }: BookListProps) {
                     <div className="flex gap-6">
                       <div className="h-[134px] w-[98px] shrink-0 overflow-hidden rounded-sm">
                         <Image
-                          className="size-full"
+                          className="size-full object-cover"
                           src={item.coverUrl}
                           alt=""
                           height={134}
@@ -63,9 +63,9 @@ export async function BookList({ query }: BookListProps) {
                       </div>
 
                       <div className="flex w-full flex-col">
-                        <h3 className="line-clamp-2 font-bold text-lg leading-snug">
+                        <p className="line-clamp-2 font-bold text-lg leading-snug">
                           {item.name}
-                        </h3>
+                        </p>
                         <p className="text-muted-foreground text-sm leading-relaxed">
                           {item.author}
                         </p>

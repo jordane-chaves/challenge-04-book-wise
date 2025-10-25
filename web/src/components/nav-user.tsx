@@ -20,7 +20,10 @@ export function NavUser({ user }: NavUserProps) {
         <AvatarFallback>{getInitials(user.name)}</AvatarFallback>
       </Avatar>
       <span className="truncate text-sidebar-foreground">{user.name}</span>
-      <a className="size-fit rounded-xs outline-none" href="/api/auth/sign-out">
+      <a
+        className="flex size-fit rounded-xs outline-none"
+        href="/api/auth/sign-out"
+      >
         <Button className="p-1" variant="ghost" size="icon">
           <SignOutIcon className="text-destructive" />
           <span className="sr-only">Sair</span>

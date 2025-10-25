@@ -1,4 +1,5 @@
 import { UserIcon } from "@phosphor-icons/react/dist/ssr"
+import type { Metadata } from "next"
 import { redirect } from "next/navigation"
 import { Suspense } from "react"
 import { auth } from "@/auth/auth"
@@ -13,6 +14,14 @@ import { RatedBooksAmount } from "./rated-books-amount"
 import { SearchForm } from "./search-form"
 import { User } from "./user"
 import { UserLoading } from "./user-loading"
+
+export async function generateMetadata(): Promise<Metadata> {
+  const { user } = await auth()
+
+  return {
+    title: user?.name ? `Perfil ${user.name}` : "Perfil",
+  }
+}
 
 export default async function Profile({
   searchParams,

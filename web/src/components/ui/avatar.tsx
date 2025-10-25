@@ -45,6 +45,7 @@ export function AvatarImage({
   return (
     <AvatarPrimitive.Image
       className={twMerge("aspect-square size-full", className)}
+      alt=""
       {...props}
     />
   )

@@ -13,6 +13,8 @@ export const metadata: Metadata = {
     template: "%s | BookWise",
     default: "BookWise",
   },
+  description:
+    "BookWise é uma aplicação web para avaliação e gerenciamento de leituras.",
 }
 
 export default async function RootLayout({

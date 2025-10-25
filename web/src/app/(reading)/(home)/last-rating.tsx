@@ -28,7 +28,7 @@ export async function LastRating() {
   return (
     <section className="space-y-4">
       <div className="flex justify-between">
-        <span>Sua última leitura</span>
+        <h2>Sua última leitura</h2>
         <Link href="/profile">
           <Button variant="link">
             Ver todas <CaretRightIcon />
@@ -40,7 +40,7 @@ export async function LastRating() {
         <div className="flex gap-6">
           <div className="h-[94px] w-[64px] shrink-0 overflow-hidden rounded-sm sm:h-[152px] sm:w-[108px]">
             <Image
-              className="size-full"
+              className="size-full object-cover"
               src={rating.coverUrl}
               alt=""
               height={152}

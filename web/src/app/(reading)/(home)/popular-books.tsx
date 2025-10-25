@@ -12,7 +12,7 @@ export async function PopularBooks() {
   return (
     <div className="space-y-4">
       <div className="flex justify-between">
-        <span>Livros populares</span>
+        <h2>Livros populares</h2>
         <Link href="/explore">
           <Button variant="link">
             Ver todos <CaretRightIcon />
@@ -36,7 +36,7 @@ export async function PopularBooks() {
               <div className="flex gap-5">
                 <div className="h-[94px] w-[64px] shrink-0 overflow-hidden rounded-sm">
                   <Image
-                    className="size-full"
+                    className="size-full object-cover object-center"
                     src={book.coverUrl}
                     alt=""
                     height={94}

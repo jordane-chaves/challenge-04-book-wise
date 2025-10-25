@@ -14,7 +14,7 @@ export async function RecentRatings() {
   return (
     <section className="space-y-4">
       <div className="flex justify-between">
-        <span>Avaliações mais recentes</span>
+        <h2>Avaliações mais recentes</h2>
       </div>
 
       <div className="space-y-3">
@@ -34,7 +34,9 @@ export async function RecentRatings() {
             <Card key={rating.id} className="space-y-8">
               <header className="flex items-start gap-4">
                 <Avatar>
-                  {rating.avatarUrl && <AvatarImage src={rating.avatarUrl} />}
+                  {rating.avatarUrl && (
+                    <AvatarImage src={rating.avatarUrl} alt={rating.userName} />
+                  )}
                   <AvatarFallback>
                     {getInitials(rating.userName)}
                   </AvatarFallback>
@@ -53,7 +55,7 @@ export async function RecentRatings() {
               <div className="flex gap-5">
                 <div className="h-[94px] w-[64px] shrink-0 overflow-hidden rounded-sm sm:h-[152px] sm:w-[108px]">
                   <Image
-                    className="size-full"
+                    className="size-full object-cover"
                     src={rating.coverUrl}
                     alt=""
                     height={152}

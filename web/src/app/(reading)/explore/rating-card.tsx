@@ -24,7 +24,9 @@ export function RatingCard({ rating, isAuthor = false }: RatingCardProps) {
     <Card className={twMerge(clsx("space-y-5", { "bg-card-hover": isAuthor }))}>
       <header className="flex gap-4">
         <Avatar size="md">
-          {rating.avatarUrl && <AvatarImage src={rating.avatarUrl} />}
+          {rating.avatarUrl && (
+            <AvatarImage src={rating.avatarUrl} alt={rating.user} />
+          )}
           <AvatarFallback>{getInitials(rating.user)}</AvatarFallback>
         </Avatar>
 

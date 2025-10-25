@@ -1,4 +1,5 @@
 import { ChartLineUpIcon } from "@phosphor-icons/react/dist/ssr"
+import type { Metadata } from "next"
 import { Suspense } from "react"
 import { SidebarButton } from "@/components/sidebar-button"
 import { LastRating } from "./last-rating"
@@ -7,6 +8,10 @@ import { PopularBooks } from "./popular-books"
 import { PopularBooksLoading } from "./popular-books-loading"
 import { RecentRatings } from "./recent-ratings"
 import { RecentRatingsLoading } from "./recent-ratings-loading"
+
+export const metadata: Metadata = {
+  title: "Início",
+}
 
 export default function Home() {
   return (

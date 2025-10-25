@@ -14,7 +14,7 @@ export async function User() {
   return (
     <div className="flex flex-col items-center gap-5">
       <Avatar size="lg">
-        {user.avatarUrl && <AvatarImage src={user.avatarUrl} />}
+        {user.avatarUrl && <AvatarImage src={user.avatarUrl} alt={user.name} />}
         <AvatarFallback>{getInitials(user.name)}</AvatarFallback>
       </Avatar>
 

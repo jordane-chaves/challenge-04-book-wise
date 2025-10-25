@@ -1,4 +1,5 @@
 import { BinocularsIcon, BookOpenIcon } from "@phosphor-icons/react/dist/ssr"
+import type { Metadata } from "next"
 import Image from "next/image"
 import { Rating } from "@/components/rating"
 import { SidebarButton } from "@/components/sidebar-button"
@@ -12,6 +13,10 @@ import { BookDetails } from "./book-details"
 import { BookSheet } from "./book-sheet"
 import { Categories } from "./categories"
 import { SearchForm } from "./search-form"
+
+export const metadata: Metadata = {
+  title: "Explorar",
+}
 
 export default async function Explore({
   searchParams,
@@ -69,7 +74,7 @@ export default async function Explore({
                   <div className="flex w-full gap-5">
                     <div className="h-[94px] w-[64px] shrink-0 overflow-hidden rounded-sm sm:h-[152px] sm:w-[108px]">
                       <Image
-                        className="size-full"
+                        className="size-full object-cover"
                         src={book.coverUrl}
                         alt=""
                         height={152}
@@ -77,9 +82,9 @@ export default async function Explore({
                       />
                     </div>
                     <div className="flex flex-col overflow-hidden">
-                      <h3 className="line-clamp-2 font-bold text-base leading-snug">
+                      <p className="line-clamp-2 font-bold text-base leading-snug">
                         {book.name}
-                      </h3>
+                      </p>
                       <p className="text-muted-foreground text-sm leading-relaxed">
                         {book.author}
                       </p>

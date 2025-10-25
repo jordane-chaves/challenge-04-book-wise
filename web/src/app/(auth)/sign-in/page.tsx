@@ -1,7 +1,12 @@
 import { WarningCircleIcon } from "@phosphor-icons/react/dist/ssr"
+import type { Metadata } from "next"
 import { GithubSignInButton } from "@/components/github-sign-in-button"
 import { GoogleSignInButton } from "@/components/google-sign-in-button"
 import { GuestSignInButton } from "@/components/guest-sign-in-button"
+
+export const metadata: Metadata = {
+  title: "Login",
+}
 
 export default async function SignIn({
   searchParams,
