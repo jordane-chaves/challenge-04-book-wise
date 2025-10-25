@@ -1,8 +1,10 @@
 import { WarningCircleIcon } from "@phosphor-icons/react/dist/ssr"
 import type { Metadata } from "next"
+import { redirect } from "next/navigation"
 import { GithubSignInButton } from "@/components/github-sign-in-button"
 import { GoogleSignInButton } from "@/components/google-sign-in-button"
 import { GuestSignInButton } from "@/components/guest-sign-in-button"
+import { getTokenFromCookie } from "@/lib/sessions"
 
 export const metadata: Metadata = {
   title: "Login",
@@ -13,7 +15,12 @@ export default async function SignIn({
 }: {
   searchParams: Promise<{ error: string }>
 }) {
+  const accessToken = await getTokenFromCookie()
   const { error } = await searchParams
+
+  if (accessToken) {
+    redirect("/")
+  }
 
   return (
     <div className="flex w-full max-w-[372px] flex-col gap-10">

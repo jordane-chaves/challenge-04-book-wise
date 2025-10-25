@@ -8,9 +8,10 @@ export default function AuthLayout({
   children: React.ReactNode
 }) {
   return (
-    <div className="-mt-10 flex max-h-[952px] flex-1 p-5 px-6 lg:mt-0">
+    <div className="-mt-10 flex max-h-[952px] flex-1 px-6 py-5 lg:mt-0">
       <div className="relative hidden w-fit overflow-hidden rounded-[10px] lg:block">
         <Image
+          className="object-cover"
           src={backgroundImg}
           alt=""
           height={912}
