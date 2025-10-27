@@ -19,6 +19,7 @@ export const fetchBookRatings: FastifyPluginCallbackZod = (app) => {
             ratings: z.array(
               z.object({
                 id: z.string(),
+                bookId: z.string(),
                 userId: z.string(),
                 user: z.string(),
                 avatarUrl: z.string().nullable(),
@@ -37,6 +38,7 @@ export const fetchBookRatings: FastifyPluginCallbackZod = (app) => {
       const ratings = await db
         .select({
           id: schema.ratings.id,
+          bookId: schema.ratings.bookId,
           userId: schema.ratings.userId,
           user: schema.users.name,
           avatarUrl: schema.users.avatarUrl,

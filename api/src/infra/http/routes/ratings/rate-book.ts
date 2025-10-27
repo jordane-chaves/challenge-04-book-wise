@@ -8,7 +8,7 @@ import { verifyJWT } from '../../hooks/verify-jwt.ts'
 
 export const rateBook: FastifyPluginCallbackZod = (app) => {
   app.post(
-    '/books/:bookId/rating',
+    '/books/:bookId/ratings',
     {
       preHandler: [verifyJWT],
       schema: {

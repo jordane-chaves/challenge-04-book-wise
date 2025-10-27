@@ -2,14 +2,12 @@ import { faker } from '@faker-js/faker'
 import type { PgInsertValue } from 'drizzle-orm/pg-core'
 import { db } from '../client.ts'
 import { schema } from '../schema/index.ts'
+import { resetDatabase } from '../utils/reset-database.ts'
 import { bookCategories } from './book-categories.ts'
 import { books } from './books.ts'
 import { categories } from './categories.ts'
 
-/** Reset database */
-for await (const table of Object.values(schema)) {
-  await db.delete(table)
-}
+await resetDatabase()
 
 await db.insert(schema.books).values(books)
 await db.insert(schema.categories).values(categories)

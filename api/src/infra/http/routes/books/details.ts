@@ -45,11 +45,11 @@ export const getBookDetails: FastifyPluginCallbackZod = (app) => {
           author: schema.books.author,
           coverUrl: schema.books.coverUrl,
           totalPages: schema.books.totalPages,
-          rating: sql<number>`CAST(AVG(${schema.ratings.rating}) AS float)`,
+          rating: sql<number>`COALESCE(AVG(${schema.ratings.rating}), 0)::float`,
           ratingsCount: countDistinct(schema.ratings.id),
           categories: sql<
             string[]
-          >`ARRAY_AGG(DISTINCT ${schema.categories.name})`,
+          >`COALESCE(ARRAY_AGG(DISTINCT ${schema.categories.name}) FILTER (WHERE ${schema.categories.name} IS NOT NULL), '{}'::text[])`,
         })
         .from(schema.books)
         .leftJoin(

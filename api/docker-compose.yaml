@@ -7,3 +7,5 @@ services:
       POSTGRES_USER: docker
       POSTGRES_PASSWORD: docker
       POSTGRES_DB: book-wise-db
+    volumes:
+      - ./docker/setup.sql:/docker-entrypoint-initdb.d/setup.sql
