@@ -7,7 +7,7 @@ export async function rateBook({
   description,
   rating,
 }: RateBookRequest) {
-  const response = await api(`/books/${bookId}/rating`, {
+  const response = await api(`/books/${bookId}/ratings`, {
     method: "POST",
     headers: {
       Authorization: `Bearer ${accessToken}`,
