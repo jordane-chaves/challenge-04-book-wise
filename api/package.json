@@ -14,7 +14,7 @@
     "db:migrate": "drizzle-kit migrate",
     "db:studio": "drizzle-kit studio",
     "db:seed": "node --env-file .env src/infra/database/drizzle/seed/seed.ts",
-    "db:reset-and-migrate": "node --env-file .env --env-file .env.test test/utils/reset-database.ts && dotenv -e .env.test drizzle-kit migrate",
+    "db:reset-and-migrate": "dotenv -e .env.test drizzle-kit migrate && node --env-file .env --env-file .env.test test/utils/reset-database.ts",
     "pretest:e2e": "npm run db:reset-and-migrate",
     "pretest:e2e:watch": "npm run db:reset-and-migrate",
     "test": "vitest run",
