@@ -6,5 +6,6 @@ export interface RatingsRepository {
     readerId: string,
   ): Promise<Rating | null>
   findManyByBookId(bookId: string): Promise<Rating[]>
+  findManyRecent(): Promise<Rating[]>
   create(rating: Rating): Promise<void>
 }

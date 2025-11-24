@@ -30,6 +30,14 @@ export class InMemoryRatingsRepository implements RatingsRepository {
     return ratings
   }
 
+  async findManyRecent(): Promise<Rating[]> {
+    const sortedRatings = this.items.sort((itemA, itemB) => {
+      return itemB.createdAt.getTime() - itemA.createdAt.getTime()
+    })
+
+    return sortedRatings
+  }
+
   async create(rating: Rating): Promise<void> {
     this.items.push(rating)
   }
