@@ -22,6 +22,24 @@ export class InMemoryRatingsRepository implements RatingsRepository {
     return rating
   }
 
+  async findLastByReaderId(readerId: string): Promise<Rating | null> {
+    const filteredRatings = this.items.filter((item) => {
+      return item.readerId.toString() === readerId
+    })
+
+    const sortedRatings = filteredRatings.sort((itemA, itemB) => {
+      return itemB.createdAt.getTime() - itemA.createdAt.getTime()
+    })
+
+    const [rating] = sortedRatings
+
+    if (!rating) {
+      return null
+    }
+
+    return rating
+  }
+
   async findManyByBookId(bookId: string): Promise<Rating[]> {
     const ratings = this.items.filter((item) => {
       return item.bookId.toString() === bookId

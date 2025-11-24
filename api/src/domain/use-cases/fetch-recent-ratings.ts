@@ -10,7 +10,7 @@ type FetchRecentRatingsUseCaseResponse = Either<
 >
 
 export class FetchRecentRatingsUseCase {
-  constructor(private ratingsRepository: RatingsRepository) {}
+  constructor(private readonly ratingsRepository: RatingsRepository) {}
 
   async execute(): Promise<FetchRecentRatingsUseCaseResponse> {
     const ratings = await this.ratingsRepository.findManyRecent()
