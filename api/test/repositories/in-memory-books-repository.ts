@@ -12,6 +12,16 @@ export class InMemoryBooksRepository implements BooksRepository {
     private readonly bookCategoriesRepository: InMemoryBookCategoriesRepository,
   ) {}
 
+  async findById(id: string): Promise<Book | null> {
+    const book = this.items.find((item) => item.id.toString() === id)
+
+    if (!book) {
+      return null
+    }
+
+    return book
+  }
+
   async searchMany({ categoryId, query }: SearchManyParams): Promise<Book[]> {
     const filteredBooks = this.items.filter((book) => {
       if (categoryId) {

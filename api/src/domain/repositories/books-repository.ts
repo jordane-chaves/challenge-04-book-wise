@@ -6,5 +6,6 @@ export interface SearchManyParams {
 }
 
 export interface BooksRepository {
+  findById(id: string): Promise<Book | null>
   searchMany(params: SearchManyParams): Promise<Book[]>
 }

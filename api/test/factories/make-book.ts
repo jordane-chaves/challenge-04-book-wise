@@ -1,14 +1,21 @@
 import { faker } from '@faker-js/faker'
+import type { UniqueEntityID } from '../../src/core/entities/unique-entity-id.ts'
 import { Book, type BookProps } from '../../src/domain/entities/book.ts'
 import { db } from '../../src/infra/database/drizzle/client.ts'
 import { schema } from '../../src/infra/database/drizzle/schema/index.ts'
 
-export function makeBook(override: Partial<BookProps> = {}): Book {
-  return Book.create({
-    author: faker.book.author(),
-    title: faker.book.title(),
-    ...override,
-  })
+export function makeBook(
+  override: Partial<BookProps> = {},
+  id?: UniqueEntityID,
+): Book {
+  return Book.create(
+    {
+      author: faker.book.author(),
+      title: faker.book.title(),
+      ...override,
+    },
+    id,
+  )
 }
 
 interface DrizzleBookProps {

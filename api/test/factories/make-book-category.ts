@@ -9,12 +9,16 @@ import { schema } from '../../src/infra/database/drizzle/schema/index.ts'
 
 export function makeBookCategory(
   override: Partial<BookCategoryProps> = {},
+  id?: UniqueEntityID,
 ): BookCategory {
-  return BookCategory.create({
-    bookId: new UniqueEntityID(),
-    categoryId: new UniqueEntityID(),
-    ...override,
-  })
+  return BookCategory.create(
+    {
+      bookId: new UniqueEntityID(),
+      categoryId: new UniqueEntityID(),
+      ...override,
+    },
+    id,
+  )
 }
 
 interface DrizzleBookCategoryProps {
