@@ -22,6 +22,14 @@ export class InMemoryRatingsRepository implements RatingsRepository {
     return rating
   }
 
+  async findManyByBookId(bookId: string): Promise<Rating[]> {
+    const ratings = this.items.filter((item) => {
+      return item.bookId.toString() === bookId
+    })
+
+    return ratings
+  }
+
   async create(rating: Rating): Promise<void> {
     this.items.push(rating)
   }
