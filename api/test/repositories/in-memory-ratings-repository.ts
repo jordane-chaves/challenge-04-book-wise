@@ -1,8 +1,11 @@
 import type { Rating } from '../../src/domain/entities/rating.ts'
 import type { RatingsRepository } from '../../src/domain/repositories/ratings-repository.ts'
+import type { InMemoryBooksRepository } from './in-memory-books-repository.ts'
 
 export class InMemoryRatingsRepository implements RatingsRepository {
   public items: Rating[] = []
+
+  constructor(private readonly booksRepository: InMemoryBooksRepository) {}
 
   async findByBookIdAndReaderId(
     bookId: string,
@@ -54,6 +57,33 @@ export class InMemoryRatingsRepository implements RatingsRepository {
     })
 
     return sortedRatings
+  }
+
+  async searchManyByReaderId(
+    readerId: string,
+    query?: string | null,
+  ): Promise<Rating[]> {
+    const ratings = this.items.filter((item) => {
+      if (item.readerId.toString() !== readerId) {
+        return false
+      }
+
+      if (query) {
+        const book = this.booksRepository.items.find((book) => {
+          return book.id.equals(item.bookId)
+        })
+
+        if (!book) {
+          throw new Error(`Book with ID "${item.bookId.toString()}" not found.`)
+        }
+
+        return book.title.includes(query)
+      }
+
+      return true
+    })
+
+    return ratings
   }
 
   async create(rating: Rating): Promise<void> {

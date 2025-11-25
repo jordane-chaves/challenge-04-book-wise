@@ -8,5 +8,9 @@ export interface RatingsRepository {
   findLastByReaderId(readerId: string): Promise<Rating | null>
   findManyByBookId(bookId: string): Promise<Rating[]>
   findManyRecent(): Promise<Rating[]>
+  searchManyByReaderId(
+    readerId: string,
+    query?: string | null,
+  ): Promise<Rating[]>
   create(rating: Rating): Promise<void>
 }
