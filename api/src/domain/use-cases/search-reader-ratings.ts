@@ -15,7 +15,7 @@ type SearchReaderRatingsUseCaseResponse = Either<
 >
 
 export class SearchReaderRatingsUseCase {
-  constructor(private ratingsRepository: RatingsRepository) {}
+  constructor(private readonly ratingsRepository: RatingsRepository) {}
 
   async execute(
     request: SearchReaderRatingsUseCaseRequest,

@@ -1,3 +1,4 @@
+import type { Book } from '../entities/book.ts'
 import type { Rating } from '../entities/rating.ts'
 
 export interface RatingsRepository {
@@ -7,6 +8,7 @@ export interface RatingsRepository {
   ): Promise<Rating | null>
   findLastByReaderId(readerId: string): Promise<Rating | null>
   findManyByBookId(bookId: string): Promise<Rating[]>
+  findManyPopularBooks(): Promise<Book[]>
   findManyRecent(): Promise<Rating[]>
   searchManyByReaderId(
     readerId: string,

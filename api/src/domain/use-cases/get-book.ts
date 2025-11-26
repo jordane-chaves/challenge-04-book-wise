@@ -15,7 +15,7 @@ type GetBookUseCaseResponse = Either<
 >
 
 export class GetBookUseCase {
-  constructor(private booksRepository: BooksRepository) {}
+  constructor(private readonly booksRepository: BooksRepository) {}
 
   async execute(
     request: GetBookUseCaseRequest,

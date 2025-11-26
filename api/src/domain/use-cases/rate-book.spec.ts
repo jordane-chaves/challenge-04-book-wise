@@ -21,7 +21,9 @@ describe('Rate Book', () => {
       inMemoryBookCategoriesRepository,
     )
 
-    inMemoryRatingsRepository = new InMemoryRatingsRepository()
+    inMemoryRatingsRepository = new InMemoryRatingsRepository(
+      inMemoryBooksRepository,
+    )
 
     sut = new RateBookUseCase(
       inMemoryRatingsRepository,

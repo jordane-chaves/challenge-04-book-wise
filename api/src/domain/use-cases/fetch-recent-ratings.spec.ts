@@ -1,14 +1,25 @@
 import { makeRating } from '../../../test/factories/make-rating.ts'
+import { InMemoryBookCategoriesRepository } from '../../../test/repositories/in-memory-book-categories-repository.ts'
+import { InMemoryBooksRepository } from '../../../test/repositories/in-memory-books-repository.ts'
 import { InMemoryRatingsRepository } from '../../../test/repositories/in-memory-ratings-repository.ts'
 import { FetchRecentRatingsUseCase } from './fetch-recent-ratings.ts'
 
+let inMemoryBookCategoriesRepository: InMemoryBookCategoriesRepository
+let inMemoryBooksRepository: InMemoryBooksRepository
 let inMemoryRatingsRepository: InMemoryRatingsRepository
 
 let sut: FetchRecentRatingsUseCase
 
 describe('Fetch Recent Ratings', () => {
   beforeEach(() => {
-    inMemoryRatingsRepository = new InMemoryRatingsRepository()
+    inMemoryBookCategoriesRepository = new InMemoryBookCategoriesRepository()
+    inMemoryBooksRepository = new InMemoryBooksRepository(
+      inMemoryBookCategoriesRepository,
+    )
+
+    inMemoryRatingsRepository = new InMemoryRatingsRepository(
+      inMemoryBooksRepository,
+    )
 
     sut = new FetchRecentRatingsUseCase(inMemoryRatingsRepository)
   })

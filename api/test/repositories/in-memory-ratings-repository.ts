@@ -1,3 +1,4 @@
+import type { Book } from '../../src/domain/entities/book.ts'
 import type { Rating } from '../../src/domain/entities/rating.ts'
 import type { RatingsRepository } from '../../src/domain/repositories/ratings-repository.ts'
 import type { InMemoryBooksRepository } from './in-memory-books-repository.ts'
@@ -49,6 +50,27 @@ export class InMemoryRatingsRepository implements RatingsRepository {
     })
 
     return ratings
+  }
+
+  async findManyPopularBooks(): Promise<Book[]> {
+    const books = this.items
+      .sort((itemA, itemB) => itemB.score - itemA.score)
+      .slice(0, 4)
+      .map((rating) => {
+        const book = this.booksRepository.items.find((book) => {
+          return book.id.equals(rating.bookId)
+        })
+
+        if (!book) {
+          throw new Error(
+            `Book with ID "${rating.bookId.toString()}" not found.`,
+          )
+        }
+
+        return book
+      })
+
+    return books
   }
 
   async findManyRecent(): Promise<Rating[]> {
