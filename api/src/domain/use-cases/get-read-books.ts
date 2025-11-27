@@ -15,9 +15,11 @@ type GetReadBooksUseCaseResponse = Either<
 export class GetReadBooksUseCase {
   constructor(private readonly ratingsRepository: RatingsRepository) {}
 
-  async execute({
-    readerId,
-  }: GetReadBooksUseCaseRequest): Promise<GetReadBooksUseCaseResponse> {
+  async execute(
+    request: GetReadBooksUseCaseRequest,
+  ): Promise<GetReadBooksUseCaseResponse> {
+    const { readerId } = request
+
     const ratings = await this.ratingsRepository.findManyByReaderId(readerId)
     const booksIds = ratings.map((rating) => rating.bookId.toString())
 

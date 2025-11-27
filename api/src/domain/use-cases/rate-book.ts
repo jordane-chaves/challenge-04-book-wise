@@ -26,12 +26,11 @@ export class RateBookUseCase {
     private readonly booksRepository: BooksRepository,
   ) {}
 
-  async execute({
-    bookId,
-    readerId,
-    description,
-    score,
-  }: RateBookUseCaseRequest): Promise<RateBookUseCaseResponse> {
+  async execute(
+    request: RateBookUseCaseRequest,
+  ): Promise<RateBookUseCaseResponse> {
+    const { bookId, readerId, description, score } = request
+
     const book = await this.booksRepository.findById(bookId)
 
     if (!book) {
