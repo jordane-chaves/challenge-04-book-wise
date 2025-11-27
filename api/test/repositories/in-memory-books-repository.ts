@@ -12,6 +12,17 @@ export class InMemoryBooksRepository implements BooksRepository {
     private readonly bookCategoriesRepository: InMemoryBookCategoriesRepository,
   ) {}
 
+  async countAuthorsByBooksIds(booksIds: string[]): Promise<number> {
+    const books = this.items.filter((book) => {
+      return booksIds.includes(book.id.toString())
+    })
+
+    const authors = books.map((book) => book.author)
+    const uniqueAuthors = [...new Set(authors)]
+
+    return uniqueAuthors.length
+  }
+
   async findById(id: string): Promise<Book | null> {
     const book = this.items.find((item) => item.id.toString() === id)
 
