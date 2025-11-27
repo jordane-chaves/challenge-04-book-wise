@@ -8,6 +8,14 @@ export class InMemoryRatingsRepository implements RatingsRepository {
 
   constructor(private readonly booksRepository: InMemoryBooksRepository) {}
 
+  async countRatedBooksByReaderId(readerId: string): Promise<number> {
+    const filteredRatings = this.items.filter((item) => {
+      return item.readerId.toString() === readerId
+    })
+
+    return filteredRatings.length
+  }
+
   async findByBookIdAndReaderId(
     bookId: string,
     readerId: string,

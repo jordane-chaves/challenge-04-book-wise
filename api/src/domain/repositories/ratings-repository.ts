@@ -2,6 +2,7 @@ import type { Book } from '../entities/book.ts'
 import type { Rating } from '../entities/rating.ts'
 
 export interface RatingsRepository {
+  countRatedBooksByReaderId(readerId: string): Promise<number>
   findByBookIdAndReaderId(
     bookId: string,
     readerId: string,
