@@ -52,6 +52,14 @@ export class InMemoryRatingsRepository implements RatingsRepository {
     return ratings
   }
 
+  async findManyByReaderId(readerId: string): Promise<Rating[]> {
+    const ratings = this.items.filter((item) => {
+      return item.readerId.toString() === readerId
+    })
+
+    return ratings
+  }
+
   async findManyPopularBooks(): Promise<Book[]> {
     const books = this.items
       .sort((itemA, itemB) => itemB.score - itemA.score)
