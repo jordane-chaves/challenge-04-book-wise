@@ -5,4 +5,5 @@ export interface BookCategoriesRepository {
     bookId: string,
     categoryId: string,
   ): Promise<BookCategory | null>
+  findManyByBooksIds(booksIds: string[]): Promise<BookCategory[]>
 }

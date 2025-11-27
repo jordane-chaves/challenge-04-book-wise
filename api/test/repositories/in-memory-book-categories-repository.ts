@@ -23,4 +23,12 @@ export class InMemoryBookCategoriesRepository
 
     return bookCategory
   }
+
+  async findManyByBooksIds(booksIds: string[]): Promise<BookCategory[]> {
+    const bookCategories = this.items.filter((bookCategory) => {
+      return booksIds.includes(bookCategory.bookId.toString())
+    })
+
+    return bookCategories
+  }
 }
