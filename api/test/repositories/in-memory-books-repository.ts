@@ -23,6 +23,18 @@ export class InMemoryBooksRepository implements BooksRepository {
     return uniqueAuthors.length
   }
 
+  async countPagesByBooksIds(booksIds: string[]): Promise<number> {
+    const books = this.items.filter((book) => {
+      return booksIds.includes(book.id.toString())
+    })
+
+    const totalPagesAmount = books.reduce((result, book) => {
+      return result + book.totalPages
+    }, 0)
+
+    return totalPagesAmount
+  }
+
   async findById(id: string): Promise<Book | null> {
     const book = this.items.find((item) => item.id.toString() === id)
 

@@ -7,6 +7,7 @@ export interface SearchManyParams {
 
 export interface BooksRepository {
   countAuthorsByBooksIds(booksIds: string[]): Promise<number>
+  countPagesByBooksIds(booksIds: string[]): Promise<number>
   findById(id: string): Promise<Book | null>
   searchMany(params: SearchManyParams): Promise<Book[]>
 }

@@ -12,6 +12,7 @@ export function makeBook(
     {
       author: faker.book.author(),
       title: faker.book.title(),
+      totalPages: faker.number.int({ min: 1, max: 10000 }),
       ...override,
     },
     id,
