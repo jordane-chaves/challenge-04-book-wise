@@ -66,6 +66,24 @@ export class InMemoryCategoriesRepository implements CategoriesRepository {
     return category
   }
 
+  async findManyByBookId(bookId: string): Promise<Category[]> {
+    const bookCategories = this.bookCategoriesRepository.items.filter(
+      (item) => {
+        return item.bookId.toString() === bookId
+      },
+    )
+
+    const categoriesIds = bookCategories.map((bookCategory) => {
+      return bookCategory.categoryId.toString()
+    })
+
+    const categories = this.items.filter((category) => {
+      return categoriesIds.includes(category.id.toString())
+    })
+
+    return categories
+  }
+
   async findMany(): Promise<Category[]> {
     return this.items
   }

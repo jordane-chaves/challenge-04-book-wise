@@ -1,17 +1,20 @@
+import MockDate from 'mockdate'
 import request from 'supertest'
 
 import { makeDrizzleBook } from '../../../../../test/factories/make-book.ts'
 import { makeDrizzleRating } from '../../../../../test/factories/make-rating.ts'
-import { makeDrizzleUser } from '../../../../../test/factories/make-user.ts'
+import { makeDrizzleUser } from '../../../../../test/factories/make-reader.ts'
 import { app } from '../../../app.ts'
 
 describe('Fetch Recent Ratings (E2E)', () => {
   beforeAll(async () => {
     await app.ready()
+    MockDate.set(new Date())
   })
 
   afterAll(async () => {
     await app.close()
+    MockDate.reset()
   })
 
   test('[GET] /ratings/recent', async () => {
@@ -22,37 +25,42 @@ describe('Fetch Recent Ratings (E2E)', () => {
       makeDrizzleUser(),
     ])
 
-    const nextYear = new Date().getFullYear() + 1
-
-    await Promise.all([
+    const [rating1, rating2, rating3] = await Promise.all([
       makeDrizzleRating({
         bookId: book.id,
-        userId: user1.id,
-        createdAt: new Date(nextYear, 10, 1),
+        readerId: user1.id,
+        createdAt: new Date(Date.now()),
       }),
       makeDrizzleRating({
         bookId: book.id,
-        userId: user2.id,
-        createdAt: new Date(nextYear, 8, 1),
+        readerId: user2.id,
+        createdAt: new Date(Date.now() - 2),
       }),
       makeDrizzleRating({
         bookId: book.id,
-        userId: user3.id,
-        createdAt: new Date(nextYear, 9, 1),
+        readerId: user3.id,
+        createdAt: new Date(Date.now() - 1),
       }),
     ])
 
     const response = await request(app.server).get('/ratings/recent')
 
     expect(response.statusCode).toBe(200)
-    expect(response.body.ratings[0]).toMatchObject({
-      createdAt: new Date(nextYear, 10, 1).toISOString(),
-    })
-    expect(response.body.ratings[1]).toMatchObject({
-      createdAt: new Date(nextYear, 9, 1).toISOString(),
-    })
-    expect(response.body.ratings[2]).toMatchObject({
-      createdAt: new Date(nextYear, 8, 1).toISOString(),
+    expect(response.body).toEqual({
+      ratings: expect.arrayContaining([
+        expect.objectContaining({
+          id: rating1.id.toString(),
+          createdAt: new Date(Date.now()).toISOString(),
+        }),
+        expect.objectContaining({
+          id: rating3.id.toString(),
+          createdAt: new Date(Date.now() - 1).toISOString(),
+        }),
+        expect.objectContaining({
+          id: rating2.id.toString(),
+          createdAt: new Date(Date.now() - 2).toISOString(),
+        }),
+      ]),
     })
   })
 })

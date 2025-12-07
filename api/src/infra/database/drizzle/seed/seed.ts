@@ -47,7 +47,7 @@ const ratings: PgInsertValue<typeof schema.ratings>[] = possibleUserRatings
       bookId: item.bookId,
       userId: item.userId,
       description: faker.lorem.paragraph(),
-      rating: faker.helpers.arrayElement(HALF_RATING_VALUES),
+      score: faker.helpers.arrayElement(HALF_RATING_VALUES),
       createdAt: faker.date.recent(),
     }
   })

@@ -3,17 +3,20 @@ import { makeRating } from '../../../test/factories/make-rating.ts'
 import { InMemoryBookCategoriesRepository } from '../../../test/repositories/in-memory-book-categories-repository.ts'
 import { InMemoryBooksRepository } from '../../../test/repositories/in-memory-books-repository.ts'
 import { InMemoryRatingsRepository } from '../../../test/repositories/in-memory-ratings-repository.ts'
+import { InMemoryReadersRepository } from '../../../test/repositories/in-memory-readers-repository.ts'
 import { UniqueEntityID } from '../../core/entities/unique-entity-id.ts'
 import { GetAuthorsReadAmountUseCase } from './get-authors-read-amount.ts'
 
 let inMemoryBookCategoriesRepository: InMemoryBookCategoriesRepository
 let inMemoryBooksRepository: InMemoryBooksRepository
 let inMemoryRatingsRepository: InMemoryRatingsRepository
+let inMemoryReadersRepository: InMemoryReadersRepository
 
 let sut: GetAuthorsReadAmountUseCase
 
 describe('Get Authors Read Amount', () => {
   beforeEach(() => {
+    inMemoryReadersRepository = new InMemoryReadersRepository()
     inMemoryBookCategoriesRepository = new InMemoryBookCategoriesRepository()
     inMemoryBooksRepository = new InMemoryBooksRepository(
       inMemoryBookCategoriesRepository,
@@ -21,6 +24,7 @@ describe('Get Authors Read Amount', () => {
 
     inMemoryRatingsRepository = new InMemoryRatingsRepository(
       inMemoryBooksRepository,
+      inMemoryReadersRepository,
     )
 
     sut = new GetAuthorsReadAmountUseCase(

@@ -1,10 +1,11 @@
-import { desc, eq } from 'drizzle-orm'
 import type { FastifyPluginCallbackZod } from 'fastify-type-provider-zod'
 import z from 'zod'
-import { db } from '../../../database/drizzle/client.ts'
-import { schema } from '../../../database/drizzle/schema/index.ts'
 import { env } from '../../../env.ts'
+import { makeGetLastReaderRatingUseCase } from '../../../factories/make-get-last-reader-rating-use-case.ts'
+import { BadRequestError } from '../../_errors/bad-request-error.ts'
 import { verifyJWT } from '../../hooks/verify-jwt.ts'
+
+const getLastRatingUseCase = makeGetLastReaderRatingUseCase()
 
 export const getLastRating: FastifyPluginCallbackZod = (app) => {
   app.get(
@@ -33,45 +34,31 @@ export const getLastRating: FastifyPluginCallbackZod = (app) => {
       },
     },
     async (request, reply) => {
-      const result = await db
-        .select({
-          id: schema.ratings.id,
-          coverUrl: schema.books.coverUrl,
-          bookName: schema.books.name,
-          bookAuthor: schema.books.author,
-          description: schema.ratings.description,
-          rating: schema.ratings.rating,
-          createdAt: schema.ratings.createdAt,
-        })
-        .from(schema.ratings)
-        .innerJoin(schema.books, eq(schema.books.id, schema.ratings.bookId))
-        .where(eq(schema.ratings.userId, request.user.sub))
-        .orderBy(desc(schema.ratings.createdAt))
-        .limit(1)
+      const result = await getLastRatingUseCase.execute({
+        readerId: request.user.sub,
+      })
 
-      if (result.length === 0) {
-        return reply.status(200).send({
-          rating: null,
-        })
+      if (result.isLeft()) {
+        throw new BadRequestError()
       }
 
-      const rating = result[0]
-
-      const coverUrl = new URL(
-        `/public/books/${rating.coverUrl}`,
-        env.API_BASE_URL,
-      )
+      const { rating } = result.value
 
       return reply.status(200).send({
-        rating: {
-          id: rating.id,
-          bookAuthor: rating.bookAuthor,
-          bookName: rating.bookName,
-          coverUrl: coverUrl.toString(),
-          description: rating.description,
-          rating: rating.rating,
-          createdAt: rating.createdAt,
-        },
+        rating: rating
+          ? {
+              id: rating.ratingId.toString(),
+              bookAuthor: rating.author,
+              bookName: rating.title,
+              coverUrl: new URL(
+                `/public/books/${rating.coverUrl}`,
+                env.API_BASE_URL,
+              ).toString(),
+              description: rating.description,
+              rating: rating.score,
+              createdAt: rating.createdAt,
+            }
+          : null,
       })
     },
   )

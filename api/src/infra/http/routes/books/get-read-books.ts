@@ -1,9 +1,10 @@
-import { eq } from 'drizzle-orm'
 import type { FastifyPluginCallbackZod } from 'fastify-type-provider-zod'
 import z from 'zod'
-import { db } from '../../../database/drizzle/client.ts'
-import { schema } from '../../../database/drizzle/schema/index.ts'
+import { makeGetReadBooksUseCase } from '../../../factories/make-get-read-books-use-case.ts'
+import { BadRequestError } from '../../_errors/bad-request-error.ts'
 import { verifyJWT } from '../../hooks/verify-jwt.ts'
+
+const getReadBooksUseCase = makeGetReadBooksUseCase()
 
 export const getReadBooks: FastifyPluginCallbackZod = (app) => {
   app.get(
@@ -21,12 +22,15 @@ export const getReadBooks: FastifyPluginCallbackZod = (app) => {
       },
     },
     async (request, reply) => {
-      const userRatings = await db
-        .select()
-        .from(schema.ratings)
-        .where(eq(schema.ratings.userId, request.user.sub))
+      const result = await getReadBooksUseCase.execute({
+        readerId: request.user.sub,
+      })
 
-      const booksIds = userRatings.map((rating) => rating.bookId)
+      if (result.isLeft()) {
+        throw new BadRequestError()
+      }
+
+      const { booksIds } = result.value
 
       return reply.status(200).send({
         booksIds,

@@ -1,10 +1,10 @@
-import { faker } from '@faker-js/faker'
 import { UniqueEntityID } from '../../src/core/entities/unique-entity-id.ts'
 import {
   BookCategory,
   type BookCategoryProps,
 } from '../../src/domain/entities/book-category.ts'
 import { db } from '../../src/infra/database/drizzle/client.ts'
+import { DrizzleBookCategoryMapper } from '../../src/infra/database/drizzle/mappers/drizzle-book-category-mapper.ts'
 import { schema } from '../../src/infra/database/drizzle/schema/index.ts'
 
 export function makeBookCategory(
@@ -21,22 +21,14 @@ export function makeBookCategory(
   )
 }
 
-interface DrizzleBookCategoryProps {
-  bookId: string
-  categoryId: string
-}
-
 export async function makeDrizzleBookCategory(
-  override: Partial<DrizzleBookCategoryProps> = {},
+  data: Partial<BookCategoryProps> = {},
 ) {
-  const result = await db
-    .insert(schema.bookCategories)
-    .values({
-      bookId: faker.string.uuid(),
-      categoryId: faker.string.uuid(),
-      ...override,
-    })
-    .returning()
+  const bookCategory = makeBookCategory(data)
 
-  return result[0]
+  await db
+    .insert(schema.bookCategories)
+    .values(DrizzleBookCategoryMapper.toDrizzle(bookCategory))
+
+  return bookCategory
 }

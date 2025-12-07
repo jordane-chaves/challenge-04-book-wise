@@ -1,7 +1,7 @@
 import { and, eq } from 'drizzle-orm'
 import request from 'supertest'
 import { makeDrizzleBook } from '../../../../../test/factories/make-book.ts'
-import { makeAuthenticatedDrizzleUser } from '../../../../../test/factories/make-user.ts'
+import { makeAuthenticatedDrizzleUser } from '../../../../../test/factories/make-reader.ts'
 import { app } from '../../../app.ts'
 import { db } from '../../../database/drizzle/client.ts'
 import { schema } from '../../../database/drizzle/schema/index.ts'
@@ -20,7 +20,7 @@ describe('Rate Book (E2E)', () => {
     const book = await makeDrizzleBook()
 
     const response = await request(app.server)
-      .post(`/books/${book.id}/ratings`)
+      .post(`/books/${book.id.toString()}/ratings`)
       .set('Authorization', `Bearer ${token}`)
       .send({
         description: 'Example description',
@@ -34,8 +34,8 @@ describe('Rate Book (E2E)', () => {
       .from(schema.ratings)
       .where(
         and(
-          eq(schema.ratings.bookId, book.id),
-          eq(schema.ratings.userId, user.id),
+          eq(schema.ratings.bookId, book.id.toString()),
+          eq(schema.ratings.userId, user.id.toString()),
         ),
       )
 

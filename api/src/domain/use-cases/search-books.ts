@@ -1,5 +1,5 @@
 import { type Either, right } from '../../core/either.ts'
-import type { Book } from '../entities/book.ts'
+import type { BookWithRating } from '../entities/value-objects/book-with-rating.ts'
 import type { BooksRepository } from '../repositories/books-repository.ts'
 
 export interface SearchBooksUseCaseRequest {
@@ -7,7 +7,10 @@ export interface SearchBooksUseCaseRequest {
   query?: string | null
 }
 
-export type SearchBooksUseCaseResponse = Either<null, { books: Book[] }>
+export type SearchBooksUseCaseResponse = Either<
+  null,
+  { books: BookWithRating[] }
+>
 
 export class SearchBooksUseCase {
   constructor(private readonly booksRepository: BooksRepository) {}

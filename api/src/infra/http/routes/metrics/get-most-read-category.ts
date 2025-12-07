@@ -1,9 +1,10 @@
-import { count, desc, eq } from 'drizzle-orm'
 import type { FastifyPluginCallbackZod } from 'fastify-type-provider-zod'
 import z from 'zod'
-import { db } from '../../../database/drizzle/client.ts'
-import { schema } from '../../../database/drizzle/schema/index.ts'
+import { makeGetMostReadCategoryUseCase } from '../../../factories/make-get-most-read-category-use-case.ts'
+import { BadRequestError } from '../../_errors/bad-request-error.ts'
 import { verifyJWT } from '../../hooks/verify-jwt.ts'
+
+const getMostReadCategoryUseCase = makeGetMostReadCategoryUseCase()
 
 export const getMostReadCategory: FastifyPluginCallbackZod = (app) => {
   app.get(
@@ -22,29 +23,18 @@ export const getMostReadCategory: FastifyPluginCallbackZod = (app) => {
       },
     },
     async (request, reply) => {
-      const result = await db
-        .select({
-          category: schema.categories.name,
-        })
-        .from(schema.books)
-        .innerJoin(schema.ratings, eq(schema.ratings.bookId, schema.books.id))
-        .innerJoin(
-          schema.bookCategories,
-          eq(schema.bookCategories.bookId, schema.books.id),
-        )
-        .innerJoin(
-          schema.categories,
-          eq(schema.categories.id, schema.bookCategories.categoryId),
-        )
-        .where(eq(schema.ratings.userId, request.user.sub))
-        .groupBy(schema.categories.id)
-        .orderBy(desc(count(schema.categories.id)))
-        .limit(1)
+      const result = await getMostReadCategoryUseCase.execute({
+        readerId: request.user.sub,
+      })
 
-      const mostReadCategory = result[0]
+      if (result.isLeft()) {
+        throw new BadRequestError()
+      }
+
+      const { category } = result.value
 
       return reply.status(200).send({
-        category: mostReadCategory?.category ?? null,
+        category: category?.name ?? null,
       })
     },
   )

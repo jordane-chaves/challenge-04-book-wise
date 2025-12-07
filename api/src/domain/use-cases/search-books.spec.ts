@@ -113,8 +113,8 @@ describe('Search Books', () => {
     expect(result.value?.books).toHaveLength(2)
     expect(result.value).toEqual({
       books: [
-        expect.objectContaining({ id: book1.id }),
-        expect.objectContaining({ id: book2.id }),
+        expect.objectContaining({ bookId: book1.id }),
+        expect.objectContaining({ bookId: book2.id }),
       ],
     })
   })

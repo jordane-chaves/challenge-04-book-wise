@@ -5,6 +5,7 @@ import {
   type CategoryProps,
 } from '../../src/domain/entities/category.ts'
 import { db } from '../../src/infra/database/drizzle/client.ts'
+import { DrizzleCategoryMapper } from '../../src/infra/database/drizzle/mappers/drizzle-category-mapper.ts'
 import { schema } from '../../src/infra/database/drizzle/schema/index.ts'
 
 export function makeCategory(
@@ -20,20 +21,12 @@ export function makeCategory(
   )
 }
 
-interface DrizzleCategoryProps {
-  name: string
-}
+export async function makeDrizzleCategory(data: Partial<CategoryProps> = {}) {
+  const category = makeCategory(data)
 
-export async function makeDrizzleCategory(
-  override: Partial<DrizzleCategoryProps> = {},
-) {
-  const result = await db
+  await db
     .insert(schema.categories)
-    .values({
-      name: faker.book.genre(),
-      ...override,
-    })
-    .returning()
+    .values(DrizzleCategoryMapper.toDrizzle(category))
 
-  return result[0]
+  return category
 }

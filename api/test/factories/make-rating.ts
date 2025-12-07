@@ -2,6 +2,7 @@ import { faker } from '@faker-js/faker'
 import { UniqueEntityID } from '../../src/core/entities/unique-entity-id.ts'
 import { Rating, type RatingProps } from '../../src/domain/entities/rating.ts'
 import { db } from '../../src/infra/database/drizzle/client.ts'
+import { DrizzleRatingMapper } from '../../src/infra/database/drizzle/mappers/drizzle-rating-mapper.ts'
 import { schema } from '../../src/infra/database/drizzle/schema/index.ts'
 
 export function makeRating(
@@ -20,27 +21,10 @@ export function makeRating(
   )
 }
 
-interface DrizzleRatingProps {
-  bookId: string
-  userId: string
-  description: string
-  rating: number
-  createdAt?: Date
-}
+export async function makeDrizzleRating(data: Partial<RatingProps> = {}) {
+  const rating = makeRating(data)
 
-export async function makeDrizzleRating(
-  override: Partial<DrizzleRatingProps> = {},
-) {
-  const result = await db
-    .insert(schema.ratings)
-    .values({
-      bookId: faker.string.uuid(),
-      userId: faker.string.uuid(),
-      description: faker.lorem.sentences(),
-      rating: faker.number.int({ min: 0, max: 5 }),
-      ...override,
-    })
-    .returning()
+  await db.insert(schema.ratings).values(DrizzleRatingMapper.toDrizzle(rating))
 
-  return result[0]
+  return rating
 }

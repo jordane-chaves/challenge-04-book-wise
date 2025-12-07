@@ -6,6 +6,7 @@ import { InMemoryBookCategoriesRepository } from '../../../test/repositories/in-
 import { InMemoryBooksRepository } from '../../../test/repositories/in-memory-books-repository.ts'
 import { InMemoryCategoriesRepository } from '../../../test/repositories/in-memory-categories-repository.ts'
 import { InMemoryRatingsRepository } from '../../../test/repositories/in-memory-ratings-repository.ts'
+import { InMemoryReadersRepository } from '../../../test/repositories/in-memory-readers-repository.ts'
 import { UniqueEntityID } from '../../core/entities/unique-entity-id.ts'
 import { GetMostReadCategoryUseCase } from './get-most-read-category.ts'
 
@@ -13,11 +14,13 @@ let inMemoryCategoriesRepository: InMemoryCategoriesRepository
 let inMemoryBookCategoriesRepository: InMemoryBookCategoriesRepository
 let inMemoryBooksRepository: InMemoryBooksRepository
 let inMemoryRatingsRepository: InMemoryRatingsRepository
+let inMemoryReadersRepository: InMemoryReadersRepository
 
 let sut: GetMostReadCategoryUseCase
 
 describe('Get Most Read Category', () => {
   beforeEach(() => {
+    inMemoryReadersRepository = new InMemoryReadersRepository()
     inMemoryBookCategoriesRepository = new InMemoryBookCategoriesRepository()
     inMemoryBooksRepository = new InMemoryBooksRepository(
       inMemoryBookCategoriesRepository,
@@ -25,6 +28,7 @@ describe('Get Most Read Category', () => {
 
     inMemoryRatingsRepository = new InMemoryRatingsRepository(
       inMemoryBooksRepository,
+      inMemoryReadersRepository,
     )
 
     inMemoryCategoriesRepository = new InMemoryCategoriesRepository(

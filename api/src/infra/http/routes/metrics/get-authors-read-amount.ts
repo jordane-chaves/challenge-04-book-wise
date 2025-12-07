@@ -1,9 +1,10 @@
-import { countDistinct, eq } from 'drizzle-orm'
 import type { FastifyPluginCallbackZod } from 'fastify-type-provider-zod'
 import z from 'zod'
-import { db } from '../../../database/drizzle/client.ts'
-import { schema } from '../../../database/drizzle/schema/index.ts'
+import { makeGetAuthorsReadAmountUseCase } from '../../../factories/make-get-authors-read-amount-use-case.ts'
+import { BadRequestError } from '../../_errors/bad-request-error.ts'
 import { verifyJWT } from '../../hooks/verify-jwt.ts'
+
+const getAuthorsReadAmountUseCase = makeGetAuthorsReadAmountUseCase()
 
 export const getAuthorsReadAmount: FastifyPluginCallbackZod = (app) => {
   app.get(
@@ -22,18 +23,18 @@ export const getAuthorsReadAmount: FastifyPluginCallbackZod = (app) => {
       },
     },
     async (request, reply) => {
-      const result = await db
-        .select({
-          amount: countDistinct(schema.books.author),
-        })
-        .from(schema.books)
-        .innerJoin(schema.ratings, eq(schema.ratings.bookId, schema.books.id))
-        .where(eq(schema.ratings.userId, request.user.sub))
+      const result = await getAuthorsReadAmountUseCase.execute({
+        readerId: request.user.sub,
+      })
 
-      const authorsReadAmount = result[0]
+      if (result.isLeft()) {
+        throw new BadRequestError()
+      }
+
+      const { amount } = result.value
 
       return reply.status(200).send({
-        amount: authorsReadAmount?.amount ?? 0,
+        amount,
       })
     },
   )

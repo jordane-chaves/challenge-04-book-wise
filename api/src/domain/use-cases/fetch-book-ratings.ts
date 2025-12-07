@@ -1,5 +1,5 @@
 import { type Either, right } from '../../core/either.ts'
-import type { Rating } from '../entities/rating.ts'
+import type { RatingDetails } from '../entities/value-objects/rating-details.ts'
 import type { RatingsRepository } from '../repositories/ratings-repository.ts'
 
 interface FetchBookRatingsUseCaseRequest {
@@ -9,7 +9,7 @@ interface FetchBookRatingsUseCaseRequest {
 type FetchBookRatingsUseCaseResponse = Either<
   null,
   {
-    ratings: Rating[]
+    ratings: RatingDetails[]
   }
 >
 
@@ -21,7 +21,8 @@ export class FetchBookRatingsUseCase {
   ): Promise<FetchBookRatingsUseCaseResponse> {
     const { bookId } = request
 
-    const ratings = await this.ratingsRepository.findManyByBookId(bookId)
+    const ratings =
+      await this.ratingsRepository.findManyRecentWithDetailsByBookId(bookId)
 
     return right({
       ratings,

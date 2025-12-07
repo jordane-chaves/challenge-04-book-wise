@@ -1,5 +1,5 @@
 import request from 'supertest'
-import { makeAuthenticatedDrizzleUser } from '../../../../../test/factories/make-user.ts'
+import { makeAuthenticatedDrizzleUser } from '../../../../../test/factories/make-reader.ts'
 import { app } from '../../../app.ts'
 
 describe('Get Profile (E2E)', () => {

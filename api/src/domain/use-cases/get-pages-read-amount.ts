@@ -23,7 +23,7 @@ export class GetPagesReadAmountUseCase {
     const booksIds = ratings.map((rating) => rating.bookId.toString())
 
     const pagesReadAmount =
-      await this.booksRepository.countPagesByBooksIds(booksIds)
+      await this.booksRepository.sumPagesByBooksIds(booksIds)
 
     return right({
       amount: pagesReadAmount,

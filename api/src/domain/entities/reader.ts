@@ -5,8 +5,9 @@ import type { Optional } from '../../core/types/optional.ts'
 export interface ReaderProps {
   name: string
   email: string
-  avatarUrl?: string
+  avatarUrl?: string | null
   createdAt: Date
+  updatedAt?: Date | null
 }
 
 export class Reader extends Entity<ReaderProps> {
@@ -24,6 +25,10 @@ export class Reader extends Entity<ReaderProps> {
 
   get createdAt() {
     return this.props.createdAt
+  }
+
+  get updatedAt() {
+    return this.props.updatedAt
   }
 
   static create(

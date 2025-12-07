@@ -1,9 +1,10 @@
-import { and, eq, ilike, or, sql } from 'drizzle-orm'
 import type { FastifyPluginCallbackZod } from 'fastify-type-provider-zod'
 import z from 'zod'
-import { db } from '../../../database/drizzle/client.ts'
-import { schema } from '../../../database/drizzle/schema/index.ts'
-import { env } from '../../../env.ts'
+import { makeSearchBooksUseCase } from '../../../factories/make-search-books-use-case.ts'
+import { BadRequestError } from '../../_errors/bad-request-error.ts'
+import { BookWithRatingPresenter } from '../../presenters/book-with-rating-presenter.ts'
+
+const searchBooksUseCase = makeSearchBooksUseCase()
 
 export const searchBooks: FastifyPluginCallbackZod = (app) => {
   app.get(
@@ -34,52 +35,19 @@ export const searchBooks: FastifyPluginCallbackZod = (app) => {
     async (request, reply) => {
       const { categoryId, query } = request.query
 
-      const result = await db
-        .select({
-          id: schema.books.id,
-          name: schema.books.name,
-          author: schema.books.author,
-          coverUrl: schema.books.coverUrl,
-          rating:
-            sql<number>`round(avg(COALESCE(${schema.ratings.rating}, 0)) * 2) / 2`.mapWith(
-              Number,
-            ),
-        })
-        .from(schema.books)
-        .where(
-          and(
-            categoryId
-              ? eq(schema.bookCategories.categoryId, categoryId)
-              : undefined,
-            query
-              ? or(
-                  ilike(schema.books.author, `%${query}%`),
-                  ilike(schema.books.name, `%${query}%`),
-                )
-              : undefined,
-          ),
-        )
-        .leftJoin(
-          schema.bookCategories,
-          eq(schema.books.id, schema.bookCategories.bookId),
-        )
-        .leftJoin(schema.ratings, eq(schema.books.id, schema.ratings.bookId))
-        .groupBy(schema.books.id)
-
-      const books = result.map((book) => {
-        const coverUrl = new URL(
-          `/public/books/${book.coverUrl}`,
-          env.API_BASE_URL,
-        )
-
-        return {
-          ...book,
-          coverUrl: coverUrl.toString(),
-        }
+      const result = await searchBooksUseCase.execute({
+        categoryId,
+        query,
       })
 
+      if (result.isLeft()) {
+        throw new BadRequestError()
+      }
+
+      const { books } = result.value
+
       return reply.status(200).send({
-        books,
+        books: books.map(BookWithRatingPresenter.toHTTP),
       })
     },
   )

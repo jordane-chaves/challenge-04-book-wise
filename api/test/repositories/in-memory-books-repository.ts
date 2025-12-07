@@ -1,4 +1,5 @@
 import type { Book } from '../../src/domain/entities/book.ts'
+import { BookWithRating } from '../../src/domain/entities/value-objects/book-with-rating.ts'
 import type {
   BooksRepository,
   SearchManyParams,
@@ -23,7 +24,7 @@ export class InMemoryBooksRepository implements BooksRepository {
     return uniqueAuthors.length
   }
 
-  async countPagesByBooksIds(booksIds: string[]): Promise<number> {
+  async sumPagesByBooksIds(booksIds: string[]): Promise<number> {
     const books = this.items.filter((book) => {
       return booksIds.includes(book.id.toString())
     })
@@ -45,7 +46,10 @@ export class InMemoryBooksRepository implements BooksRepository {
     return book
   }
 
-  async searchMany({ categoryId, query }: SearchManyParams): Promise<Book[]> {
+  async searchMany({
+    categoryId,
+    query,
+  }: SearchManyParams): Promise<BookWithRating[]> {
     const filteredBooks = this.items.filter((book) => {
       if (categoryId) {
         const isBookWithCategory = this.bookCategoriesRepository.items.some(
@@ -71,6 +75,16 @@ export class InMemoryBooksRepository implements BooksRepository {
       return true
     })
 
-    return filteredBooks
+    const booksWithRelations = filteredBooks.map<BookWithRating>((book) => {
+      return BookWithRating.create({
+        bookId: book.id,
+        author: book.author,
+        coverUrl: book.coverUrl,
+        title: book.title,
+        score: 0,
+      })
+    })
+
+    return booksWithRelations
   }
 }

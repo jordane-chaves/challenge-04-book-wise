@@ -1,7 +1,10 @@
 import type { FastifyPluginCallbackZod } from 'fastify-type-provider-zod'
 import z from 'zod'
-import { db } from '../../../database/drizzle/client.ts'
-import { schema } from '../../../database/drizzle/schema/index.ts'
+import { makeFetchCategoriesUseCase } from '../../../factories/make-fetch-categories-use-case.ts'
+import { BadRequestError } from '../../_errors/bad-request-error.ts'
+import { CategoryPresenter } from '../../presenters/category-presenter.ts'
+
+const fetchCategoriesUseCase = makeFetchCategoriesUseCase()
 
 export const fetchCategories: FastifyPluginCallbackZod = (app) => {
   app.get(
@@ -23,13 +26,16 @@ export const fetchCategories: FastifyPluginCallbackZod = (app) => {
       },
     },
     async (_request, reply) => {
-      const categories = await db
-        .select()
-        .from(schema.categories)
-        .orderBy(schema.categories.name)
+      const result = await fetchCategoriesUseCase.execute()
+
+      if (result.isLeft()) {
+        throw new BadRequestError()
+      }
+
+      const { categories } = result.value
 
       return reply.status(200).send({
-        categories,
+        categories: categories.map(CategoryPresenter.toHTTP),
       })
     },
   )

@@ -1,9 +1,10 @@
-import { count, desc, eq, sql } from 'drizzle-orm'
 import type { FastifyPluginCallbackZod } from 'fastify-type-provider-zod'
 import z from 'zod'
-import { db } from '../../../database/drizzle/client.ts'
-import { schema } from '../../../database/drizzle/schema/index.ts'
-import { env } from '../../../env.ts'
+import { makeGetPopularBooksUseCase } from '../../../factories/make-get-popular-books-use-case.ts'
+import { BadRequestError } from '../../_errors/bad-request-error.ts'
+import { BookWithRatingPresenter } from '../../presenters/book-with-rating-presenter.ts'
+
+const getPopularBooksUseCase = makeGetPopularBooksUseCase()
 
 export const getPopularBooks: FastifyPluginCallbackZod = (app) => {
   app.get(
@@ -29,40 +30,16 @@ export const getPopularBooks: FastifyPluginCallbackZod = (app) => {
       },
     },
     async (_, reply) => {
-      const result = await db
-        .select({
-          id: schema.books.id,
-          author: schema.books.author,
-          coverUrl: schema.books.coverUrl,
-          name: schema.books.name,
-          rating: sql<number>`COALESCE(CAST(AVG(${schema.ratings.rating}) AS float), 0)`,
-        })
-        .from(schema.books)
-        .leftJoin(schema.ratings, eq(schema.ratings.bookId, schema.books.id))
-        .groupBy(schema.books.id)
-        .orderBy(
-          desc(
-            sql<number>`COALESCE(CAST(AVG(${schema.ratings.rating}) AS float), 0)`,
-          ),
-          desc(count(schema.ratings.bookId)),
-        )
-        .limit(4)
+      const result = await getPopularBooksUseCase.execute()
 
-      const books = result.map((book) => {
-        const coverUrl = new URL(
-          `/public/books/${book.coverUrl}`,
-          env.API_BASE_URL,
-        )
+      if (result.isLeft()) {
+        throw new BadRequestError()
+      }
 
-        return {
-          ...book,
-          coverUrl: coverUrl.toString(),
-          rating: Math.round(book.rating * 2) / 2, // round to half
-        }
-      })
+      const { books } = result.value
 
       return reply.status(200).send({
-        books,
+        books: books.map(BookWithRatingPresenter.toHTTP),
       })
     },
   )

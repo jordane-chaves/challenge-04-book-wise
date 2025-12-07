@@ -1,10 +1,12 @@
-import { and, desc, eq, ilike, sql } from 'drizzle-orm'
+import dayjs from 'dayjs'
 import type { FastifyPluginCallbackZod } from 'fastify-type-provider-zod'
 import z from 'zod'
-import { db } from '../../../database/drizzle/client.ts'
-import { schema } from '../../../database/drizzle/schema/index.ts'
 import { env } from '../../../env.ts'
+import { makeSearchReaderRatingsUseCase } from '../../../factories/make-search-reader-ratings-use-case.ts'
+import { BadRequestError } from '../../_errors/bad-request-error.ts'
 import { verifyJWT } from '../../hooks/verify-jwt.ts'
+
+const searchReaderRatingsUseCase = makeSearchReaderRatingsUseCase()
 
 const ratingResponseSchema = z.object({
   id: z.string(),
@@ -67,54 +69,49 @@ export const searchUserRatings: FastifyPluginCallbackZod = (app) => {
     async (request, reply) => {
       const { query } = request.query
 
-      const result = await db
-        .select({
-          id: schema.books.id,
-          author: schema.books.author,
-          name: schema.books.name,
-          coverUrl: schema.books.coverUrl,
-          description: schema.ratings.description,
-          rating: schema.ratings.rating,
-          date: sql<string>`TO_CHAR(${schema.ratings.createdAt}, 'YYYY-MM-DD')`,
-        })
-        .from(schema.ratings)
-        .innerJoin(schema.books, eq(schema.ratings.bookId, schema.books.id))
-        .where(
-          and(
-            eq(schema.ratings.userId, request.user.sub),
-            query ? ilike(schema.books.name, `%${query}%`) : undefined,
-          ),
-        )
-        .orderBy(
-          desc(sql<string>`TO_CHAR(${schema.ratings.createdAt}, 'YYYY-MM-DD')`),
-        )
+      const result = await searchReaderRatingsUseCase.execute({
+        readerId: request.user.sub,
+        query,
+      })
 
-      const ratings = result
-        .map((item) => {
+      if (result.isLeft()) {
+        throw new BadRequestError()
+      }
+
+      const { ratings } = result.value
+
+      const mappedRatings = ratings.reduce(
+        (result, rating) => {
+          const formattedDate = dayjs(rating.createdAt).format('YYYY-MM-DD')
+          const isDateIncluded = formattedDate in result
+
           const coverUrl = new URL(
-            `/public/books/${item.coverUrl}`,
+            `/public/books/${rating.coverUrl}`,
             env.API_BASE_URL,
-          )
+          ).toString()
 
-          return { ...item, coverUrl: coverUrl.toString() }
-        })
-        .reduce(
-          (result, item) => {
-            const isDateIncluded = item.date in result
+          const item: RatingResponseSchema = {
+            id: rating.ratingId.toString(),
+            name: rating.title,
+            author: rating.author,
+            coverUrl,
+            description: rating.description,
+            rating: rating.score,
+          }
 
-            if (isDateIncluded) {
-              result[item.date].push(item)
-            } else {
-              result[item.date] = [item]
-            }
+          if (isDateIncluded) {
+            result[formattedDate].push(item)
+          } else {
+            result[formattedDate] = [item]
+          }
 
-            return result
-          },
-          {} as Record<string, RatingResponseSchema[]>,
-        )
+          return result
+        },
+        {} as Record<string, RatingResponseSchema[]>,
+      )
 
       return reply.status(200).send({
-        ratings,
+        ratings: mappedRatings,
       })
     },
   )

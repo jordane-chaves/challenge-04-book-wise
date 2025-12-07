@@ -1,12 +1,17 @@
-import type { Book } from '../../src/domain/entities/book.ts'
 import type { Rating } from '../../src/domain/entities/rating.ts'
+import { BookWithRating } from '../../src/domain/entities/value-objects/book-with-rating.ts'
+import { RatingDetails } from '../../src/domain/entities/value-objects/rating-details.ts'
 import type { RatingsRepository } from '../../src/domain/repositories/ratings-repository.ts'
 import type { InMemoryBooksRepository } from './in-memory-books-repository.ts'
+import type { InMemoryReadersRepository } from './in-memory-readers-repository.ts'
 
 export class InMemoryRatingsRepository implements RatingsRepository {
   public items: Rating[] = []
 
-  constructor(private readonly booksRepository: InMemoryBooksRepository) {}
+  constructor(
+    private readonly booksRepository: InMemoryBooksRepository,
+    private readonly readersRepository: InMemoryReadersRepository,
+  ) {}
 
   async countRatedBooksByReaderId(readerId: string): Promise<number> {
     const filteredRatings = this.items.filter((item) => {
@@ -34,8 +39,44 @@ export class InMemoryRatingsRepository implements RatingsRepository {
     return rating
   }
 
-  async findLastByReaderId(readerId: string): Promise<Rating | null> {
-    const filteredRatings = this.items.filter((item) => {
+  async findLastDetailsByReaderId(
+    readerId: string,
+  ): Promise<RatingDetails | null> {
+    const ratings = this.items.map((item) => {
+      const reader = this.readersRepository.items.find((reader) => {
+        return reader.id.equals(item.readerId)
+      })
+
+      if (!reader) {
+        throw new Error(
+          `Reader with ID "${item.readerId.toString()}" not found.`,
+        )
+      }
+
+      const book = this.booksRepository.items.find((book) => {
+        return book.id.equals(item.bookId)
+      })
+
+      if (!book) {
+        throw new Error(`Book with ID "${item.bookId.toString()}" not found.`)
+      }
+
+      return RatingDetails.create({
+        ratingId: item.id,
+        bookId: item.bookId,
+        readerId: item.readerId,
+        reader: reader.name,
+        avatarUrl: reader.avatarUrl,
+        description: item.description,
+        score: item.score,
+        title: book.title,
+        author: book.author,
+        coverUrl: book.coverUrl,
+        createdAt: item.createdAt,
+      })
+    })
+
+    const filteredRatings = ratings.filter((item) => {
       return item.readerId.toString() === readerId
     })
 
@@ -68,11 +109,11 @@ export class InMemoryRatingsRepository implements RatingsRepository {
     return ratings
   }
 
-  async findManyPopularBooks(): Promise<Book[]> {
+  async findManyPopularBooks(): Promise<BookWithRating[]> {
     const books = this.items
       .sort((itemA, itemB) => itemB.score - itemA.score)
       .slice(0, 4)
-      .map((rating) => {
+      .map<BookWithRating>((rating) => {
         const book = this.booksRepository.items.find((book) => {
           return book.id.equals(rating.bookId)
         })
@@ -83,25 +124,123 @@ export class InMemoryRatingsRepository implements RatingsRepository {
           )
         }
 
-        return book
+        const bookRatings = this.items.filter((rating) => {
+          return rating.bookId.equals(book.id)
+        })
+
+        const bookRatingsSum = bookRatings.reduce((acc, rating) => {
+          return acc + rating.score
+        }, 0)
+
+        const bookScore = bookRatingsSum / bookRatings.length
+
+        return BookWithRating.create({
+          bookId: book.id,
+          author: book.author,
+          coverUrl: book.coverUrl,
+          title: book.title,
+          score: bookScore,
+        })
       })
 
     return books
   }
 
-  async findManyRecent(): Promise<Rating[]> {
-    const sortedRatings = this.items.sort((itemA, itemB) => {
+  async findManyRecentWithDetails(): Promise<RatingDetails[]> {
+    const ratings = this.items.map((item) => {
+      const reader = this.readersRepository.items.find((reader) => {
+        return reader.id.equals(item.readerId)
+      })
+
+      if (!reader) {
+        throw new Error(
+          `Reader with ID "${item.readerId.toString()}" not found.`,
+        )
+      }
+
+      const book = this.booksRepository.items.find((book) => {
+        return book.id.equals(item.bookId)
+      })
+
+      if (!book) {
+        throw new Error(`Book with ID "${item.bookId.toString()}" not found.`)
+      }
+
+      return RatingDetails.create({
+        ratingId: item.id,
+        bookId: item.bookId,
+        readerId: item.readerId,
+        reader: reader.name,
+        avatarUrl: reader.avatarUrl,
+        description: item.description,
+        score: item.score,
+        title: book.title,
+        author: book.author,
+        coverUrl: book.coverUrl,
+        createdAt: item.createdAt,
+      })
+    })
+
+    const sortedRatings = ratings.sort((itemA, itemB) => {
       return itemB.createdAt.getTime() - itemA.createdAt.getTime()
     })
 
     return sortedRatings
   }
 
-  async searchManyByReaderId(
+  async findManyRecentWithDetailsByBookId(
+    bookId: string,
+  ): Promise<RatingDetails[]> {
+    const ratings = this.items.map((item) => {
+      const reader = this.readersRepository.items.find((reader) => {
+        return reader.id.equals(item.readerId)
+      })
+
+      if (!reader) {
+        throw new Error(
+          `Reader with ID "${item.readerId.toString()}" not found.`,
+        )
+      }
+
+      const book = this.booksRepository.items.find((book) => {
+        return book.id.equals(item.bookId)
+      })
+
+      if (!book) {
+        throw new Error(`Book with ID "${item.bookId.toString()}" not found.`)
+      }
+
+      return RatingDetails.create({
+        ratingId: item.id,
+        bookId: item.bookId,
+        readerId: item.readerId,
+        reader: reader.name,
+        avatarUrl: reader.avatarUrl,
+        description: item.description,
+        score: item.score,
+        title: book.title,
+        author: book.author,
+        coverUrl: book.coverUrl,
+        createdAt: item.createdAt,
+      })
+    })
+
+    const filteredRatings = ratings.filter((item) => {
+      return item.bookId.toString() === bookId
+    })
+
+    const sortedRatings = filteredRatings.sort((itemA, itemB) => {
+      return itemB.createdAt.getTime() - itemA.createdAt.getTime()
+    })
+
+    return sortedRatings
+  }
+
+  async searchManyDetailsByReaderId(
     readerId: string,
     query?: string | null,
-  ): Promise<Rating[]> {
-    const ratings = this.items.filter((item) => {
+  ): Promise<RatingDetails[]> {
+    const filteredRatings = this.items.filter((item) => {
       if (item.readerId.toString() !== readerId) {
         return false
       }
@@ -119,6 +258,40 @@ export class InMemoryRatingsRepository implements RatingsRepository {
       }
 
       return true
+    })
+
+    const ratings = filteredRatings.map((item) => {
+      const reader = this.readersRepository.items.find((reader) => {
+        return reader.id.equals(item.readerId)
+      })
+
+      if (!reader) {
+        throw new Error(
+          `Reader with ID "${item.readerId.toString()}" not found.`,
+        )
+      }
+
+      const book = this.booksRepository.items.find((book) => {
+        return book.id.equals(item.bookId)
+      })
+
+      if (!book) {
+        throw new Error(`Book with ID "${item.bookId.toString()}" not found.`)
+      }
+
+      return RatingDetails.create({
+        ratingId: item.id,
+        bookId: item.bookId,
+        readerId: item.readerId,
+        reader: reader.name,
+        avatarUrl: reader.avatarUrl,
+        description: item.description,
+        score: item.score,
+        title: book.title,
+        author: book.author,
+        coverUrl: book.coverUrl,
+        createdAt: item.createdAt,
+      })
     })
 
     return ratings

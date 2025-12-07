@@ -3,7 +3,7 @@ import { makeDrizzleBook } from '../../../../../test/factories/make-book.ts'
 import { makeDrizzleBookCategory } from '../../../../../test/factories/make-book-category.ts'
 import { makeDrizzleCategory } from '../../../../../test/factories/make-category.ts'
 import { makeDrizzleRating } from '../../../../../test/factories/make-rating.ts'
-import { makeAuthenticatedDrizzleUser } from '../../../../../test/factories/make-user.ts'
+import { makeAuthenticatedDrizzleUser } from '../../../../../test/factories/make-reader.ts'
 import { app } from '../../../app.ts'
 
 describe('Get Most Read Category (E2E)', () => {
@@ -33,9 +33,9 @@ describe('Get Most Read Category (E2E)', () => {
       makeDrizzleBookCategory({ bookId: book1.id, categoryId: category1.id }),
       makeDrizzleBookCategory({ bookId: book2.id, categoryId: category1.id }),
       makeDrizzleBookCategory({ bookId: book3.id, categoryId: category2.id }),
-      makeDrizzleRating({ bookId: book1.id, userId: user.id }),
-      makeDrizzleRating({ bookId: book2.id, userId: user.id }),
-      makeDrizzleRating({ bookId: book3.id, userId: user.id }),
+      makeDrizzleRating({ bookId: book1.id, readerId: user.id }),
+      makeDrizzleRating({ bookId: book2.id, readerId: user.id }),
+      makeDrizzleRating({ bookId: book3.id, readerId: user.id }),
     ])
 
     const response = await request(app.server)

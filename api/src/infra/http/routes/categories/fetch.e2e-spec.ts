@@ -23,9 +23,9 @@ describe('Fetch Categories (E2E)', () => {
     expect(response.statusCode).toBe(200)
     expect(response.body).toEqual({
       categories: expect.arrayContaining([
-        expect.objectContaining({ id: category1.id }),
-        expect.objectContaining({ id: category2.id }),
-        expect.objectContaining({ id: category3.id }),
+        expect.objectContaining({ id: category1.id.toString() }),
+        expect.objectContaining({ id: category2.id.toString() }),
+        expect.objectContaining({ id: category3.id.toString() }),
       ]),
     })
   })

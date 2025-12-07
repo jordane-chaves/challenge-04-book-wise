@@ -4,7 +4,7 @@ import { makeDrizzleBook } from '../../../../../test/factories/make-book.ts'
 import { makeDrizzleBookCategory } from '../../../../../test/factories/make-book-category.ts'
 import { makeDrizzleCategory } from '../../../../../test/factories/make-category.ts'
 import { makeDrizzleRating } from '../../../../../test/factories/make-rating.ts'
-import { makeDrizzleUser } from '../../../../../test/factories/make-user.ts'
+import { makeDrizzleUser } from '../../../../../test/factories/make-reader.ts'
 import { app } from '../../../app.ts'
 
 describe('Get Book Details (E2E)', () => {
@@ -34,8 +34,8 @@ describe('Get Book Details (E2E)', () => {
     ])
 
     await Promise.all([
-      makeDrizzleRating({ bookId: book.id, userId: user1.id, rating: 3 }),
-      makeDrizzleRating({ bookId: book.id, userId: user2.id, rating: 5 }),
+      makeDrizzleRating({ bookId: book.id, readerId: user1.id, score: 3 }),
+      makeDrizzleRating({ bookId: book.id, readerId: user2.id, score: 5 }),
     ])
 
     const response = await request(app.server).get(`/books/${book.id}`)
@@ -43,8 +43,9 @@ describe('Get Book Details (E2E)', () => {
     expect(response.statusCode).toBe(200)
     expect(response.body).toEqual({
       book: expect.objectContaining({
-        name: book.name,
+        name: book.title,
         rating: 4,
+        ratingCount: 2,
         categories: expect.arrayContaining([category1.name, category2.name]),
       }),
     })

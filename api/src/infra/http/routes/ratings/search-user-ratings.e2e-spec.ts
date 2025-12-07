@@ -1,8 +1,8 @@
+import dayjs from 'dayjs'
 import request from 'supertest'
-
 import { makeDrizzleBook } from '../../../../../test/factories/make-book.ts'
 import { makeDrizzleRating } from '../../../../../test/factories/make-rating.ts'
-import { makeAuthenticatedDrizzleUser } from '../../../../../test/factories/make-user.ts'
+import { makeAuthenticatedDrizzleUser } from '../../../../../test/factories/make-reader.ts'
 import { app } from '../../../app.ts'
 
 describe('Search User Ratings (E2E)', () => {
@@ -23,23 +23,24 @@ describe('Search User Ratings (E2E)', () => {
       makeDrizzleBook(),
     ])
 
-    const nextYear = new Date().getFullYear() + 1
+    const date1 = dayjs().subtract(1, 'day')
+    const date2 = dayjs()
 
-    await Promise.all([
+    const [rating1, rating2, rating3] = await Promise.all([
       makeDrizzleRating({
         bookId: book1.id,
-        userId: user.id,
-        createdAt: new Date(nextYear, 2, 1),
+        readerId: user.id,
+        createdAt: date1.toDate(),
       }),
       makeDrizzleRating({
         bookId: book2.id,
-        userId: user.id,
-        createdAt: new Date(nextYear, 2, 1),
+        readerId: user.id,
+        createdAt: date1.toDate(),
       }),
       makeDrizzleRating({
         bookId: book3.id,
-        userId: user.id,
-        createdAt: new Date(nextYear, 3, 1),
+        readerId: user.id,
+        createdAt: date2.toDate(),
       }),
     ])
 
@@ -47,46 +48,49 @@ describe('Search User Ratings (E2E)', () => {
       .get('/ratings')
       .set('Authorization', `Bearer ${token}`)
 
+    const formattedDate1 = date1.format('YYYY-MM-DD')
+    const formattedDate2 = date2.format('YYYY-MM-DD')
+
     expect(response.statusCode).toBe(200)
     expect(response.body).toEqual({
       ratings: {
-        [`${nextYear}-03-01`]: expect.arrayContaining([
-          expect.objectContaining({ id: book1.id }),
-          expect.objectContaining({ id: book2.id }),
+        [formattedDate1]: expect.arrayContaining([
+          expect.objectContaining({ id: rating1.id.toString() }),
+          expect.objectContaining({ id: rating2.id.toString() }),
         ]),
-        [`${nextYear}-04-01`]: expect.arrayContaining([
-          expect.objectContaining({ id: book3.id }),
+        [formattedDate2]: expect.arrayContaining([
+          expect.objectContaining({ id: rating3.id.toString() }),
         ]),
       },
     })
   })
 
-  test('[GET] /ratings - search by book name', async () => {
+  test('[GET] /ratings - search by book title', async () => {
     const { token, user } = await makeAuthenticatedDrizzleUser()
 
     const [book1, book2, book3] = await Promise.all([
       makeDrizzleBook(),
-      makeDrizzleBook({ name: 'O Hobbit' }),
+      makeDrizzleBook({ title: 'O Hobbit' }),
       makeDrizzleBook(),
     ])
 
-    const nextYear = new Date().getFullYear() + 1
+    const date1 = dayjs()
 
     await Promise.all([
       makeDrizzleRating({
         bookId: book1.id,
-        userId: user.id,
-        createdAt: new Date(nextYear, 2, 1),
+        readerId: user.id,
+        createdAt: date1.toDate(),
       }),
       makeDrizzleRating({
         bookId: book2.id,
-        userId: user.id,
-        createdAt: new Date(nextYear, 2, 1),
+        readerId: user.id,
+        createdAt: date1.toDate(),
       }),
       makeDrizzleRating({
         bookId: book3.id,
-        userId: user.id,
-        createdAt: new Date(nextYear, 2, 1),
+        readerId: user.id,
+        createdAt: date1.toDate(),
       }),
     ])
 
@@ -95,10 +99,12 @@ describe('Search User Ratings (E2E)', () => {
       .set('Authorization', `Bearer ${token}`)
       .query({ query: 'O Hobbit' })
 
+    const formattedDate1 = date1.format('YYYY-MM-DD')
+
     expect(response.statusCode).toBe(200)
     expect(response.body).toEqual({
       ratings: {
-        [`${nextYear}-03-01`]: [expect.objectContaining({ name: 'O Hobbit' })],
+        [formattedDate1]: [expect.objectContaining({ name: 'O Hobbit' })],
       },
     })
   })

@@ -3,16 +3,19 @@ import { makeRating } from '../../../test/factories/make-rating.ts'
 import { InMemoryBookCategoriesRepository } from '../../../test/repositories/in-memory-book-categories-repository.ts'
 import { InMemoryBooksRepository } from '../../../test/repositories/in-memory-books-repository.ts'
 import { InMemoryRatingsRepository } from '../../../test/repositories/in-memory-ratings-repository.ts'
+import { InMemoryReadersRepository } from '../../../test/repositories/in-memory-readers-repository.ts'
 import { GetPopularBooksUseCase } from './get-popular-books.ts'
 
 let inMemoryBookCategoriesRepository: InMemoryBookCategoriesRepository
 let inMemoryBooksRepository: InMemoryBooksRepository
 let inMemoryRatingsRepository: InMemoryRatingsRepository
+let inMemoryReadersRepository: InMemoryReadersRepository
 
 let sut: GetPopularBooksUseCase
 
 describe('Get Popular Books', () => {
   beforeEach(() => {
+    inMemoryReadersRepository = new InMemoryReadersRepository()
     inMemoryBookCategoriesRepository = new InMemoryBookCategoriesRepository()
     inMemoryBooksRepository = new InMemoryBooksRepository(
       inMemoryBookCategoriesRepository,
@@ -20,6 +23,7 @@ describe('Get Popular Books', () => {
 
     inMemoryRatingsRepository = new InMemoryRatingsRepository(
       inMemoryBooksRepository,
+      inMemoryReadersRepository,
     )
 
     sut = new GetPopularBooksUseCase(inMemoryRatingsRepository)
@@ -48,10 +52,10 @@ describe('Get Popular Books', () => {
     expect(result.value?.books).toHaveLength(4)
     expect(result.value).toEqual({
       books: [
-        expect.objectContaining({ id: book3.id }),
-        expect.objectContaining({ id: book5.id }),
-        expect.objectContaining({ id: book2.id }),
-        expect.objectContaining({ id: book4.id }),
+        expect.objectContaining({ bookId: book3.id, score: 5 }),
+        expect.objectContaining({ bookId: book5.id, score: 4 }),
+        expect.objectContaining({ bookId: book2.id, score: 3 }),
+        expect.objectContaining({ bookId: book4.id, score: 2 }),
       ],
     })
   })

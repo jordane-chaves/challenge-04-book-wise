@@ -1,5 +1,5 @@
 import { type Either, right } from '../../core/either.ts'
-import type { Rating } from '../entities/rating.ts'
+import type { RatingDetails } from '../entities/value-objects/rating-details.ts'
 import type { RatingsRepository } from '../repositories/ratings-repository.ts'
 
 interface GetLastReaderRatingUseCaseRequest {
@@ -9,7 +9,7 @@ interface GetLastReaderRatingUseCaseRequest {
 type GetLastReaderRatingUseCaseResponse = Either<
   null,
   {
-    rating: Rating | null
+    rating: RatingDetails | null
   }
 >
 
@@ -21,7 +21,8 @@ export class GetLastReaderRatingUseCase {
   ): Promise<GetLastReaderRatingUseCaseResponse> {
     const { readerId } = request
 
-    const rating = await this.ratingsRepository.findLastByReaderId(readerId)
+    const rating =
+      await this.ratingsRepository.findLastDetailsByReaderId(readerId)
 
     return right({
       rating,

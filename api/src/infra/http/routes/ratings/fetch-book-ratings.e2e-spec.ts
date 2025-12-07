@@ -1,7 +1,7 @@
 import request from 'supertest'
 import { makeDrizzleBook } from '../../../../../test/factories/make-book.ts'
 import { makeDrizzleRating } from '../../../../../test/factories/make-rating.ts'
-import { makeDrizzleUser } from '../../../../../test/factories/make-user.ts'
+import { makeDrizzleUser } from '../../../../../test/factories/make-reader.ts'
 import { app } from '../../../app.ts'
 
 describe('Fetch Book Ratings (E2E)', () => {
@@ -22,20 +22,31 @@ describe('Fetch Book Ratings (E2E)', () => {
     ])
 
     await Promise.all([
-      makeDrizzleRating({ bookId: book.id, userId: user1.id }),
-      makeDrizzleRating({ bookId: book.id, userId: user2.id }),
-      makeDrizzleRating({ bookId: book.id, userId: user3.id }),
+      makeDrizzleRating({ bookId: book.id, readerId: user1.id }),
+      makeDrizzleRating({ bookId: book.id, readerId: user2.id }),
+      makeDrizzleRating({ bookId: book.id, readerId: user3.id }),
     ])
 
-    const response = await request(app.server).get(`/books/${book.id}/ratings`)
+    const response = await request(app.server).get(
+      `/books/${book.id.toString()}/ratings`,
+    )
 
     expect(response.statusCode).toBe(200)
     expect(response.body).toEqual({
-      ratings: [
-        expect.objectContaining({ bookId: book.id }),
-        expect.objectContaining({ bookId: book.id }),
-        expect.objectContaining({ bookId: book.id }),
-      ],
+      ratings: expect.arrayContaining([
+        expect.objectContaining({
+          bookId: book.id.toString(),
+          user: user1.name,
+        }),
+        expect.objectContaining({
+          bookId: book.id.toString(),
+          user: user2.name,
+        }),
+        expect.objectContaining({
+          bookId: book.id.toString(),
+          user: user3.name,
+        }),
+      ]),
     })
   })
 })

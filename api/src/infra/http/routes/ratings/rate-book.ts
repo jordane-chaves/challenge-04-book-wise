@@ -1,10 +1,12 @@
-import { and, eq } from 'drizzle-orm'
 import type { FastifyPluginCallbackZod } from 'fastify-type-provider-zod'
 import z from 'zod'
-import { db } from '../../../database/drizzle/client.ts'
-import { schema } from '../../../database/drizzle/schema/index.ts'
+import { ConflictError } from '../../../../core/errors/errors/conflict-error.ts'
+import { ResourceNotFoundError } from '../../../../core/errors/errors/resource-not-found-error.ts'
+import { makeRateBookUseCase } from '../../../factories/make-rate-book-use-case.ts'
 import { BadRequestError } from '../../_errors/bad-request-error.ts'
 import { verifyJWT } from '../../hooks/verify-jwt.ts'
+
+const rateBookUseCase = makeRateBookUseCase()
 
 export const rateBook: FastifyPluginCallbackZod = (app) => {
   app.post(
@@ -33,28 +35,26 @@ export const rateBook: FastifyPluginCallbackZod = (app) => {
     async (request, reply) => {
       const { bookId } = request.params
       const { description, rating } = request.body
-      const userId = request.user.sub
 
-      const ratingExists = await db
-        .select()
-        .from(schema.ratings)
-        .where(
-          and(
-            eq(schema.ratings.bookId, bookId),
-            eq(schema.ratings.userId, userId),
-          ),
-        )
-
-      if (ratingExists.length > 0) {
-        throw new BadRequestError('You have already rated this book')
-      }
-
-      await db.insert(schema.ratings).values({
+      const result = await rateBookUseCase.execute({
         bookId,
-        userId,
+        readerId: request.user.sub,
         description,
-        rating,
+        score: rating,
       })
+
+      if (result.isLeft()) {
+        const error = result.value
+
+        switch (error.constructor) {
+          case ConflictError:
+            throw new BadRequestError('You have already rated this book')
+          case ResourceNotFoundError:
+            throw new BadRequestError('Book not found')
+          default:
+            throw new BadRequestError()
+        }
+      }
 
       return reply.status(201).send()
     },

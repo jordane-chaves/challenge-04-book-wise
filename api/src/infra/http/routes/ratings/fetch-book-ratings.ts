@@ -1,8 +1,9 @@
-import { desc, eq } from 'drizzle-orm'
 import type { FastifyPluginCallbackZod } from 'fastify-type-provider-zod'
 import z from 'zod'
-import { db } from '../../../database/drizzle/client.ts'
-import { schema } from '../../../database/drizzle/schema/index.ts'
+import { makeFetchBookRatingsUseCase } from '../../../factories/make-fetch-book-ratings-use-case.ts'
+import { BadRequestError } from '../../_errors/bad-request-error.ts'
+
+const fetchBookRatingsUseCase = makeFetchBookRatingsUseCase()
 
 export const fetchBookRatings: FastifyPluginCallbackZod = (app) => {
   app.get(
@@ -35,24 +36,27 @@ export const fetchBookRatings: FastifyPluginCallbackZod = (app) => {
     async (request, reply) => {
       const { bookId } = request.params
 
-      const ratings = await db
-        .select({
-          id: schema.ratings.id,
-          bookId: schema.ratings.bookId,
-          userId: schema.ratings.userId,
-          user: schema.users.name,
-          avatarUrl: schema.users.avatarUrl,
-          description: schema.ratings.description,
-          rating: schema.ratings.rating,
-          createdAt: schema.ratings.createdAt,
-        })
-        .from(schema.ratings)
-        .innerJoin(schema.users, eq(schema.users.id, schema.ratings.userId))
-        .where(eq(schema.ratings.bookId, bookId))
-        .orderBy(desc(schema.ratings.createdAt))
+      const result = await fetchBookRatingsUseCase.execute({
+        bookId,
+      })
+
+      if (result.isLeft()) {
+        throw new BadRequestError()
+      }
+
+      const { ratings } = result.value
 
       return reply.status(200).send({
-        ratings,
+        ratings: ratings.map(rating => ({
+          id: rating.ratingId.toString(),
+          bookId: rating.bookId.toString(),
+          userId: rating.readerId.toString(),
+          user: rating.reader,
+          avatarUrl: rating.avatarUrl ?? null,
+          rating: rating.score,
+          description: rating.description,
+          createdAt: rating.createdAt,
+        })),
       })
     },
   )

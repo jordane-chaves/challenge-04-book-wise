@@ -1,10 +1,11 @@
-import { countDistinct, eq, sql } from 'drizzle-orm'
 import type { FastifyPluginCallbackZod } from 'fastify-type-provider-zod'
 import z from 'zod'
-import { db } from '../../../database/drizzle/client.ts'
-import { schema } from '../../../database/drizzle/schema/index.ts'
-import { env } from '../../../env.ts'
+import { ResourceNotFoundError } from '../../../../core/errors/errors/resource-not-found-error.ts'
+import { makeGetBookUseCase } from '../../../factories/make-get-book-use-case.ts'
 import { BadRequestError } from '../../_errors/bad-request-error.ts'
+import { BookDetailsPresenter } from '../../presenters/book-details-presenter.ts'
+
+const getBookUseCase = makeGetBookUseCase()
 
 export const getBookDetails: FastifyPluginCallbackZod = (app) => {
   app.get(
@@ -38,56 +39,25 @@ export const getBookDetails: FastifyPluginCallbackZod = (app) => {
     async (request, reply) => {
       const { bookId } = request.params
 
-      const result = await db
-        .select({
-          id: schema.books.id,
-          name: schema.books.name,
-          author: schema.books.author,
-          coverUrl: schema.books.coverUrl,
-          totalPages: schema.books.totalPages,
-          rating: sql<number>`COALESCE(AVG(${schema.ratings.rating}), 0)::float`,
-          ratingsCount: countDistinct(schema.ratings.id),
-          categories: sql<
-            string[]
-          >`COALESCE(ARRAY_AGG(DISTINCT ${schema.categories.name}) FILTER (WHERE ${schema.categories.name} IS NOT NULL), '{}'::text[])`,
-        })
-        .from(schema.books)
-        .leftJoin(
-          schema.bookCategories,
-          eq(schema.bookCategories.bookId, schema.books.id),
-        )
-        .leftJoin(
-          schema.categories,
-          eq(schema.categories.id, schema.bookCategories.categoryId),
-        )
-        .leftJoin(schema.ratings, eq(schema.ratings.bookId, schema.books.id))
-        .where(eq(schema.books.id, bookId))
-        .groupBy(schema.books.id)
+      const result = await getBookUseCase.execute({
+        bookId,
+      })
 
-      if (result.length === 0) {
-        throw new BadRequestError('Book not found')
+      if (result.isLeft()) {
+        const error = result.value
+
+        switch (error.constructor) {
+          case ResourceNotFoundError:
+            throw new BadRequestError('Book not found')
+          default:
+            throw new BadRequestError()
+        }
       }
 
-      const book = result[0]
-
-      const coverUrl = new URL(
-        `/public/books/${book.coverUrl}`,
-        env.API_BASE_URL,
-      )
-
-      const rating = Math.round(book.rating * 2) / 2 // round to half
+      const { book } = result.value
 
       return reply.status(200).send({
-        book: {
-          id: book.id,
-          name: book.name,
-          author: book.author,
-          coverUrl: coverUrl.toString(),
-          rating,
-          ratingCount: book.ratingsCount,
-          totalPages: book.totalPages,
-          categories: book.categories,
-        },
+        book: BookDetailsPresenter.toHTTP(book),
       })
     },
   )

@@ -1,10 +1,13 @@
-import { eq } from 'drizzle-orm'
 import type { FastifyPluginCallbackZod } from 'fastify-type-provider-zod'
 import z from 'zod'
-import { db } from '../../../database/drizzle/client.ts'
-import { schema } from '../../../database/drizzle/schema/index.ts'
+import { ResourceNotFoundError } from '../../../../core/errors/errors/resource-not-found-error.ts'
+import { makeGetReaderProfileUseCase } from '../../../factories/make-get-reader-profile-use-case.ts'
+import { BadRequestError } from '../../_errors/bad-request-error.ts'
 import { UnauthorizedError } from '../../_errors/unauthorized-error.ts'
 import { verifyJWT } from '../../hooks/verify-jwt.ts'
+import { ReaderPresenter } from '../../presenters/reader-presenter.ts'
+
+const getReaderProfileUseCase = makeGetReaderProfileUseCase()
 
 export const getProfile: FastifyPluginCallbackZod = (app) => {
   app.get(
@@ -30,21 +33,25 @@ export const getProfile: FastifyPluginCallbackZod = (app) => {
       },
     },
     async (request, reply) => {
-      const userId = request.user.sub
+      const result = await getReaderProfileUseCase.execute({
+        readerId: request.user.sub,
+      })
 
-      const result = await db
-        .select()
-        .from(schema.users)
-        .where(eq(schema.users.id, userId))
+      if (result.isLeft()) {
+        const error = result.value
 
-      const user = result[0]
-
-      if (!user) {
-        throw new UnauthorizedError('Profile not found.')
+        switch (error.constructor) {
+          case ResourceNotFoundError:
+            throw new UnauthorizedError(error.message)
+          default:
+            throw new BadRequestError()
+        }
       }
 
+      const { reader } = result.value
+
       return reply.status(200).send({
-        user,
+        user: ReaderPresenter.toHTTP(reader),
       })
     },
   )

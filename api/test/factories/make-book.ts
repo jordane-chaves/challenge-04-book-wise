@@ -2,6 +2,7 @@ import { faker } from '@faker-js/faker'
 import type { UniqueEntityID } from '../../src/core/entities/unique-entity-id.ts'
 import { Book, type BookProps } from '../../src/domain/entities/book.ts'
 import { db } from '../../src/infra/database/drizzle/client.ts'
+import { DrizzleBookMapper } from '../../src/infra/database/drizzle/mappers/drizzle-book-mapper.ts'
 import { schema } from '../../src/infra/database/drizzle/schema/index.ts'
 
 export function makeBook(
@@ -11,36 +12,21 @@ export function makeBook(
   return Book.create(
     {
       author: faker.book.author(),
+      coverUrl: faker.image.url(),
       title: faker.book.title(),
+      summary: faker.lorem.sentences(),
       totalPages: faker.number.int({ min: 1, max: 10000 }),
+      createdAt: faker.date.anytime(),
       ...override,
     },
     id,
   )
 }
 
-interface DrizzleBookProps {
-  name: string
-  author: string
-  coverUrl: string
-  summary: string
-  totalPages: number
-}
+export async function makeDrizzleBook(data: Partial<BookProps> = {}) {
+  const book = makeBook(data)
 
-export async function makeDrizzleBook(
-  override: Partial<DrizzleBookProps> = {},
-) {
-  const result = await db
-    .insert(schema.books)
-    .values({
-      name: faker.book.title(),
-      author: faker.book.author(),
-      coverUrl: faker.image.url(),
-      summary: faker.lorem.paragraph(),
-      totalPages: faker.number.int({ min: 50, max: 5000 }),
-      ...override,
-    })
-    .returning()
+  await db.insert(schema.books).values(DrizzleBookMapper.toDrizzle(book))
 
-  return result[0]
+  return book
 }

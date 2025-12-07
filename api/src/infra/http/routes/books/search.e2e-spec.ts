@@ -14,37 +14,40 @@ describe('Search Books (E2E)', () => {
     await app.close()
   })
 
-  test('[GET] /books - search by name', async () => {
-    const [, book2] = await Promise.all([
-      makeDrizzleBook(),
-      makeDrizzleBook(),
-      makeDrizzleBook(),
+  test('[GET] /books - search by title', async () => {
+    await Promise.all([
+      makeDrizzleBook({ title: 'Código Limpo' }),
+      makeDrizzleBook({ title: 'Arquitetura Limpa' }),
+      makeDrizzleBook({ title: 'O Hobbit' }),
     ])
 
     const response = await request(app.server)
       .get('/books')
-      .query({ query: book2.name })
+      .query({ query: 'Arquitetura Limpa' })
 
     expect(response.statusCode).toBe(200)
     expect(response.body).toEqual({
-      books: [expect.objectContaining({ name: book2.name })],
+      books: [expect.objectContaining({ name: 'Arquitetura Limpa' })],
     })
   })
 
   test('[GET] /books - search by author', async () => {
-    const [, book2] = await Promise.all([
-      makeDrizzleBook(),
-      makeDrizzleBook(),
-      makeDrizzleBook(),
+    await Promise.all([
+      makeDrizzleBook({ author: 'Robert C. Martin' }),
+      makeDrizzleBook({ author: 'Robert C. Martin' }),
+      makeDrizzleBook({ author: 'J.R.R. Tolkien' }),
     ])
 
     const response = await request(app.server)
       .get('/books')
-      .query({ query: book2.author })
+      .query({ query: 'Robert C. Martin' })
 
     expect(response.statusCode).toBe(200)
     expect(response.body).toEqual({
-      books: [expect.objectContaining({ id: book2.id, author: book2.author })],
+      books: [
+        expect.objectContaining({ author: 'Robert C. Martin' }),
+        expect.objectContaining({ author: 'Robert C. Martin' }),
+      ],
     })
   })
 
@@ -68,14 +71,14 @@ describe('Search Books (E2E)', () => {
 
     const response = await request(app.server)
       .get('/books')
-      .query({ categoryId: category1.id })
+      .query({ categoryId: category1.id.toString() })
 
     expect(response.statusCode).toBe(200)
     expect(response.body).toEqual({
-      books: expect.arrayContaining([
-        expect.objectContaining({ id: book1.id }),
-        expect.objectContaining({ id: book3.id }),
-      ]),
+      books: [
+        expect.objectContaining({ id: book1.id.toString() }),
+        expect.objectContaining({ id: book3.id.toString() }),
+      ],
     })
   })
 })

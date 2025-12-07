@@ -1,5 +1,5 @@
 import { type Either, right } from '../../core/either.ts'
-import type { Rating } from '../entities/rating.ts'
+import type { RatingDetails } from '../entities/value-objects/rating-details.ts'
 import type { RatingsRepository } from '../repositories/ratings-repository.ts'
 
 interface SearchReaderRatingsUseCaseRequest {
@@ -10,7 +10,7 @@ interface SearchReaderRatingsUseCaseRequest {
 type SearchReaderRatingsUseCaseResponse = Either<
   null,
   {
-    ratings: Rating[]
+    ratings: RatingDetails[]
   }
 >
 
@@ -22,7 +22,7 @@ export class SearchReaderRatingsUseCase {
   ): Promise<SearchReaderRatingsUseCaseResponse> {
     const { readerId, query } = request
 
-    const ratings = await this.ratingsRepository.searchManyByReaderId(
+    const ratings = await this.ratingsRepository.searchManyDetailsByReaderId(
       readerId,
       query,
     )

@@ -1,9 +1,10 @@
-import { desc, eq } from 'drizzle-orm'
 import type { FastifyPluginCallbackZod } from 'fastify-type-provider-zod'
 import z from 'zod'
-import { db } from '../../../database/drizzle/client.ts'
-import { schema } from '../../../database/drizzle/schema/index.ts'
 import { env } from '../../../env.ts'
+import { makeFetchRecentRatingsUseCase } from '../../../factories/make-fetch-recent-ratings-use-case.ts'
+import { BadRequestError } from '../../_errors/bad-request-error.ts'
+
+const fetchRecentRatingsUseCase = makeFetchRecentRatingsUseCase()
 
 export const fetchRecentRatings: FastifyPluginCallbackZod = (app) => {
   app.get(
@@ -32,37 +33,33 @@ export const fetchRecentRatings: FastifyPluginCallbackZod = (app) => {
       },
     },
     async (_, reply) => {
-      const result = await db
-        .select({
-          id: schema.ratings.id,
-          userName: schema.users.name,
-          avatarUrl: schema.users.avatarUrl,
-          coverUrl: schema.books.coverUrl,
-          bookName: schema.books.name,
-          bookAuthor: schema.books.author,
-          description: schema.ratings.description,
-          rating: schema.ratings.rating,
-          createdAt: schema.ratings.createdAt,
-        })
-        .from(schema.ratings)
-        .innerJoin(schema.books, eq(schema.books.id, schema.ratings.bookId))
-        .innerJoin(schema.users, eq(schema.users.id, schema.ratings.userId))
-        .orderBy(desc(schema.ratings.createdAt))
+      const result = await fetchRecentRatingsUseCase.execute()
 
-      const ratings = result.map((item) => {
-        const coverUrl = new URL(
-          `/public/books/${item.coverUrl}`,
-          env.API_BASE_URL,
-        )
+      if (result.isLeft()) {
+        throw new BadRequestError()
+      }
 
-        return {
-          ...item,
-          coverUrl: coverUrl.toString(),
-        }
-      })
+      const { ratings } = result.value
 
       return reply.status(200).send({
-        ratings,
+        ratings: ratings.map((rating) => {
+          const coverUrl = new URL(
+            `/public/books/${rating.coverUrl}`,
+            env.API_BASE_URL,
+          ).toString()
+
+          return {
+            id: rating.ratingId.toString(),
+            description: rating.description,
+            rating: rating.score,
+            userName: rating.reader,
+            avatarUrl: rating.avatarUrl ?? null,
+            bookName: rating.title,
+            bookAuthor: rating.author,
+            coverUrl: coverUrl,
+            createdAt: rating.createdAt,
+          }
+        }),
       })
     },
   )

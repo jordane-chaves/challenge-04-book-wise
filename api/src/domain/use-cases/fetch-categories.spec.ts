@@ -3,17 +3,20 @@ import { InMemoryBookCategoriesRepository } from '../../../test/repositories/in-
 import { InMemoryBooksRepository } from '../../../test/repositories/in-memory-books-repository.ts'
 import { InMemoryCategoriesRepository } from '../../../test/repositories/in-memory-categories-repository.ts'
 import { InMemoryRatingsRepository } from '../../../test/repositories/in-memory-ratings-repository.ts'
+import { InMemoryReadersRepository } from '../../../test/repositories/in-memory-readers-repository.ts'
 import { FetchCategoriesUseCase } from './fetch-categories.ts'
 
 let inMemoryCategoriesRepository: InMemoryCategoriesRepository
 let inMemoryBookCategoriesRepository: InMemoryBookCategoriesRepository
 let inMemoryBooksRepository: InMemoryBooksRepository
 let inMemoryRatingsRepository: InMemoryRatingsRepository
+let inMemoryReadersRepository: InMemoryReadersRepository
 
 let sut: FetchCategoriesUseCase
 
 describe('Fetch Categories', () => {
   beforeEach(() => {
+    inMemoryReadersRepository = new InMemoryReadersRepository()
     inMemoryBookCategoriesRepository = new InMemoryBookCategoriesRepository()
     inMemoryBooksRepository = new InMemoryBooksRepository(
       inMemoryBookCategoriesRepository,
@@ -21,6 +24,7 @@ describe('Fetch Categories', () => {
 
     inMemoryRatingsRepository = new InMemoryRatingsRepository(
       inMemoryBooksRepository,
+      inMemoryReadersRepository,
     )
 
     inMemoryCategoriesRepository = new InMemoryCategoriesRepository(

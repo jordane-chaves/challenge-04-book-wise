@@ -1,7 +1,7 @@
 import request from 'supertest'
 import { makeDrizzleBook } from '../../../../../test/factories/make-book.ts'
 import { makeDrizzleRating } from '../../../../../test/factories/make-rating.ts'
-import { makeAuthenticatedDrizzleUser } from '../../../../../test/factories/make-user.ts'
+import { makeAuthenticatedDrizzleUser } from '../../../../../test/factories/make-reader.ts'
 import { app } from '../../../app.ts'
 
 describe('Get Pages Read Amount (E2E)', () => {
@@ -23,9 +23,9 @@ describe('Get Pages Read Amount (E2E)', () => {
     ])
 
     await Promise.all([
-      makeDrizzleRating({ bookId: book1.id, userId: user.id }),
-      makeDrizzleRating({ bookId: book2.id, userId: user.id }),
-      makeDrizzleRating({ bookId: book3.id, userId: user.id }),
+      makeDrizzleRating({ bookId: book1.id, readerId: user.id }),
+      makeDrizzleRating({ bookId: book2.id, readerId: user.id }),
+      makeDrizzleRating({ bookId: book3.id, readerId: user.id }),
     ])
 
     const response = await request(app.server)

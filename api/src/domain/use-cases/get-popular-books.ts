@@ -1,11 +1,11 @@
 import { type Either, right } from '../../core/either.ts'
-import type { Book } from '../entities/book.ts'
+import type { BookWithRating } from '../entities/value-objects/book-with-rating.ts'
 import type { RatingsRepository } from '../repositories/ratings-repository.ts'
 
 type GetPopularBooksUseCaseResponse = Either<
   null,
   {
-    books: Book[]
+    books: BookWithRating[]
   }
 >
 
